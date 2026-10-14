@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reglas de recomendación | RISA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
+<style>
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --ink: #1B2430; --muted: #566273; --line: #D5DCE5;
+  --navy: #1B396A; --appbar: #1B396A; --err: #B02A37; --ok: #1E7E34;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #12161C; --surface: #1B212A; --ink: #E8ECF1; --muted: #9AA6B5; --line: #2C3541; --navy: #9DBBEF; --appbar: #0F2444; --err: #FF8A94; --ok: #6FD18A; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+button, input, select { font: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.appbar { background: var(--appbar); color: #fff; }
+.appbar-in { max-width: 1200px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.marca { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.marca strong { font-size: 1.125rem; letter-spacing: 0.02em; }
+.marca span { font-size: 0.8125rem; opacity: 0.8; }
+.usuario { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.quien { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; min-width: 0; }
+.quien b { max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quien small { font-size: 0.75rem; opacity: 0.8; }
+.btn-menu { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #fff; cursor: pointer; }
+.btn-menu:hover { background: rgba(255, 255, 255, 0.14); }
+.btn-menu:focus-visible { outline-color: #fff; }
+.menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; min-width: 230px; display: flex; flex-direction: column; padding: 6px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; }
+.menu[hidden] { display: none; }
+.menu a { padding: 10px 12px; border-radius: 6px; color: inherit; text-decoration: none; }
+.menu a:hover { background: color-mix(in srgb, var(--navy) 12%, var(--surface)); }
+.menu a:focus-visible { outline: 2px solid var(--navy); outline-offset: -2px; }
+.menu a[aria-current="page"] { font-weight: 600; color: var(--navy); }
+.menu a:last-child { margin-top: 6px; border-top: 1px solid var(--line); border-radius: 0 0 6px 6px; }
+@media (max-width: 640px) { .marca span { display: none; } }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 48px; }
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px; margin-bottom: 16px; }
+h1 { margin: 0 0 4px; font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; color: var(--navy); }
+h2 { margin: 0; font-size: 1.0625rem; font-weight: 700; }
+.sub { margin: 0; color: var(--muted); }
+.metas { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-block; padding: 2px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 0.8125rem; }
+.banner { margin: 0 0 16px; padding: 10px 14px; border: 1px solid var(--ok); border-radius: 6px; background: color-mix(in srgb, var(--ok) 12%, var(--surface)); }
+.banner[hidden] { display: none; }
+
+.panel { margin-bottom: 20px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.panel-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px 24px; max-width: 640px; margin: 12px 0; }
+label { display: block; margin-bottom: 4px; font-weight: 600; }
+input[type="text"], select { width: 100%; padding: 9px 10px; color: var(--ink); background: var(--surface); border: 1px solid var(--muted); border-radius: 6px; }
+[aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+.hint { margin: 4px 0 0; color: var(--muted); font-size: 0.8125rem; }
+.err { margin: 4px 0 0; color: var(--err); font-size: 0.8125rem; font-weight: 600; }
+.err[hidden] { display: none; }
+.btn { padding: 9px 16px; border: 1px solid var(--navy); border-radius: 6px; background: var(--navy); color: var(--surface); font-weight: 600; cursor: pointer; }
+.sec { padding: 7px 12px; border: 1px solid var(--navy); border-radius: 6px; background: var(--surface); color: var(--navy); font-weight: 600; cursor: pointer; }
+.sec:hover { background: color-mix(in srgb, var(--navy) 10%, var(--surface)); }
+.sec:disabled { opacity: 0.45; cursor: not-allowed; }
+.nota { max-width: 640px; margin-bottom: 14px; }
+
+.buscar { width: min(100%, 280px); }
+.tabla-w { overflow-x: auto; }
+table { width: 100%; min-width: 760px; border-collapse: collapse; }
+th, td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-size: 0.8125rem; font-weight: 600; }
+.num { text-align: right; }
+td .chip { margin: 0 4px 4px 0; }
+
+dialog { width: min(580px, calc(100% - 32px)); padding: 20px 22px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+fieldset { margin: 14px 0; padding: 0; border: 0; }
+legend { margin-bottom: 8px; padding: 0; font-weight: 600; }
+.fila { margin-bottom: 10px; }
+.fila-in { display: flex; gap: 8px; }
+.fila-in select { flex: 1; min-width: 0; }
+.aviso { margin: 14px 0; padding: 8px 12px; border-left: 4px solid var(--navy); background: color-mix(in srgb, var(--navy) 8%, var(--surface)); font-size: 0.8125rem; }
+.acciones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<!-- Maqueta con datos de ejemplo: las claves y semestres salen de la reticula; los prerrequisitos son ilustrativos. -->
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="marca"><strong>RISA</strong><span>Retícula Interactiva de Seguimiento Académico</span></div>
+    <div class="usuario">
+      <div class="quien"><b id="admin"></b><small>Administrador</small></div>
+      <button type="button" class="btn-menu" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="Menú principal" hidden>
+        <a href="#" aria-current="page">Reglas de recomendación</a>
+        <a href="#">Catálogo de materias</a>
+        <a href="#">Bitácora de cambios</a>
+        <a href="#">Cerrar sesión</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="banner" id="aviso" role="status" hidden></p>
+
+  <div class="top">
+    <div>
+      <h1>Reglas de recomendación</h1>
+      <p class="sub">Define cuántas materias puede recomendar el motor y qué materias debe aprobar el estudiante antes de cursar otra.</p>
+    </div>
+    <div class="metas">
+      <span class="chip" id="version"></span>
+      <span class="chip">Calificación mínima aprobatoria: 70 (fija)</span>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="t-carga">
+    <h2 id="t-carga">Carga máxima por semestre</h2>
+    <form id="form-carga" novalidate>
+      <div class="campos">
+        <div>
+          <label for="r03">Créditos por semestre</label>
+          <input id="r03" type="text" inputmode="numeric" autocomplete="off" aria-describedby="h-r03 err-r03">
+          <p class="hint" id="h-r03">Número entero de 1 a 50. Valor por defecto: 36.</p>
+          <p class="err" id="err-r03" hidden></p>
+        </div>
+        <div>
+          <label for="r04">Materias por semestre</label>
+          <input id="r04" type="text" inputmode="numeric" autocomplete="off" aria-describedby="h-r04 err-r04">
+          <p class="hint" id="h-r04">Número entero de 1 a 10. Valor por defecto: 7.</p>
+          <p class="err" id="err-r04" hidden></p>
+        </div>
+      </div>
+      <p class="hint nota">Si los dos límites se contradicen, el motor aplica el más restrictivo. Al reducirlos, las materias reprobadas conservan prioridad sobre las disponibles.</p>
+      <button type="submit" class="btn">Guardar carga máxima</button>
+    </form>
+  </section>
+
+  <section class="panel" aria-labelledby="t-mat">
+    <div class="panel-h">
+      <h2 id="t-mat">Prerrequisitos y créditos requeridos por materia</h2>
+      <div class="buscar">
+        <label for="buscar" class="vh">Buscar materia</label>
+        <input id="buscar" type="text" placeholder="Buscar por clave o nombre" autocomplete="off">
+      </div>
+    </div>
+    <div class="tabla-w">
+      <table>
+        <thead>
+          <tr><th>Clave</th><th>Materia</th><th class="num">Semestre</th><th class="num">Créditos</th><th class="num">Créditos requeridos</th><th>Prerrequisitos</th><th><span class="vh">Acciones</span></th></tr>
+        </thead>
+        <tbody id="cuerpo"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <form id="form-pre" novalidate>
+    <h2 id="dlg-t"></h2>
+    <p class="sub" id="dlg-sub"></p>
+    <fieldset>
+      <legend>Prerrequisitos (máximo 5)</legend>
+      <div id="filas"></div>
+      <p class="hint" id="vacio">Esta materia no tiene prerrequisitos. Agrega uno si debe aprobarse otra materia antes.</p>
+      <p class="err" id="err-lista" role="alert" hidden></p>
+      <button type="button" class="sec" id="agregar">Agregar prerrequisito</button>
+    </fieldset>
+    <div>
+      <label for="rq">Créditos requeridos para cursarla</label>
+      <input id="rq" type="text" inputmode="numeric" autocomplete="off" aria-describedby="h-rq err-rq">
+      <p class="hint" id="h-rq">Créditos acumulados que debe tener aprobados. Escribe 0 si no exige créditos.</p>
+      <p class="err" id="err-rq" hidden></p>
+    </div>
+    <p class="aviso">Al guardar, las recomendaciones ya calculadas quedan desactualizadas y se recalculan la siguiente vez que cada estudiante las consulte. El historial académico no cambia.</p>
+    <div class="acciones">
+      <button type="button" class="sec" id="cancelar">Cancelar</button>
+      <button type="submit" class="btn">Guardar cambios</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const $ = id => document.getElementById(id);
+
+const ADMIN = "Roberto Salinas Vega";   // En Laravel: nombre del usuario autenticado
+const PLAN_TOTAL = 220;                  // Créditos totales del plan completo
+// c clave, n nombre, s semestre, cr créditos, rq créditos requeridos (R02), p prerrequisitos (R01)
+const MATERIAS = [
+  { c: "AED-1285", n: "Fundamentos de Programación", s: 1, cr: 5, rq: 0, p: [] },
+  { c: "ACF-2301", n: "Cálculo Diferencial", s: 1, cr: 5, rq: 0, p: [] },
+  { c: "AED-1286", n: "Programación Orientada a Objetos", s: 2, cr: 5, rq: 0, p: ["AED-1285"] },
+  { c: "ACF-0902", n: "Cálculo Integral", s: 2, cr: 5, rq: 0, p: ["ACF-2301"] },
+  { c: "AED-1026", n: "Estructura de Datos", s: 3, cr: 5, rq: 0, p: ["AED-1286"] },
+  { c: "ACF-0904", n: "Cálculo Vectorial", s: 3, cr: 5, rq: 0, p: ["ACF-0902"] },
+  { c: "AEF-1031", n: "Fundamentos de Base de Datos", s: 4, cr: 5, rq: 0, p: [] },
+  { c: "SCA-1025", n: "Taller de Base de Datos", s: 5, cr: 4, rq: 0, p: ["AEF-1031"] },
+  { c: "SCB-1001", n: "Administración de Base de Datos", s: 6, cr: 5, rq: 0, p: ["SCA-1025"] },
+  { c: "SCC-1019", n: "Programación Lógica y Funcional", s: 6, cr: 4, rq: 0, p: ["AED-1026"] },
+  { c: "RS-0000", n: "Residencia Profesional", s: 9, cr: 10, rq: 176, p: [] }
+];
+const cfg = { cr: 36, ma: 7, version: 12 };
+const porClave = c => MATERIAS.find(m => m.c === c);
+const masPesada = () => MATERIAS.reduce((a, m) => (m.cr > a.cr ? m : a));
+
+// ---------- Validaciones ----------
+function entero(txt, min, max, vacio) {
+  const t = txt.trim();
+  if (!t) return vacio;
+  if (!/^-?\d+$/.test(t)) {
+    return /^-?\d+[.,]\d+$/.test(t) ? "Escribe un número entero, sin decimales." : "Escribe solo números enteros, sin letras ni símbolos.";
+  }
+  const v = Number(t);
+  return v < min || v > max ? "El valor debe estar entre " + min + " y " + max + "." : "";
+}
+function marcar(campo, errEl, msg) {
+  errEl.textContent = msg;
+  errEl.hidden = !msg;
+  campo.setAttribute("aria-invalid", msg ? "true" : "false");
+}
+function avisar(msg) {
+  const a = $("aviso");
+  a.textContent = msg;
+  a.hidden = false;
+  a.scrollIntoView({ block: "nearest" });
+}
+const pintarVersion = () => { $("version").textContent = "Versión de reglas " + cfg.version; };
+
+// ---------- Carga máxima (R03 y R04) ----------
+$("form-carga").addEventListener("submit", e => {
+  e.preventDefault();
+  let msgCr = entero($("r03").value, 1, 50, "Este campo es obligatorio.");
+  if (!msgCr) {
+    const p = masPesada();
+    if (Number($("r03").value) < p.cr) {
+      msgCr = "Debe ser al menos " + p.cr + ", los créditos de «" + p.n + "», la materia con más créditos del plan.";
+    }
+  }
+  const msgMa = entero($("r04").value, 1, 10, "Este campo es obligatorio.");
+  marcar($("r03"), $("err-r03"), msgCr);
+  marcar($("r04"), $("err-r04"), msgMa);
+  if (msgCr || msgMa) { (msgCr ? $("r03") : $("r04")).focus(); return; }
+
+  const cr = Number($("r03").value), ma = Number($("r04").value);
+  $("r03").value = cr; $("r04").value = ma;
+  if (cr === cfg.cr && ma === cfg.ma) { avisar("No hay cambios por guardar en la carga máxima."); return; }
+  cfg.cr = cr; cfg.ma = ma; cfg.version++;
+  pintarVersion();
+  avisar("Carga máxima guardada: " + cr + " créditos y " + ma + " materias por semestre. Versión de reglas " + cfg.version + ". El cambio quedó en la bitácora.");
+});
+
+// ---------- Consulta de reglas ----------
+function pintarTabla() {
+  const q = $("buscar").value.trim().toLowerCase();
+  const lista = MATERIAS.filter(m => !q || (m.c + " " + m.n).toLowerCase().includes(q));
+  $("cuerpo").innerHTML = lista.length ? lista.map(m =>
+    '<tr><td>' + m.c + '</td><td>' + esc(m.n) + '</td><td class="num">' + m.s + '</td><td class="num">' + m.cr + '</td><td class="num">' + m.rq + '</td><td>' +
+    (m.p.length ? m.p.map(c => '<span class="chip" title="' + c + '">' + esc(porClave(c).n) + '</span>').join("") : '<span class="sub">Sin prerrequisitos</span>') +
+    '</td><td><button type="button" class="sec" data-c="' + m.c + '" aria-label="Editar reglas de ' + esc(m.n) + '">Editar</button></td></tr>'
+  ).join("") : '<tr><td colspan="7" class="sub">Ninguna materia coincide con la búsqueda.</td></tr>';
+}
+$("buscar").addEventListener("input", pintarTabla);
+$("cuerpo").addEventListener("click", e => {
+  const b = e.target.closest("button[data-c]");
+  if (b) abrir(b.dataset.c);
+});
+
+// ---------- Formulario de prerrequisitos (R01) y créditos requeridos (R02) ----------
+let actual = null;
+const dlg = $("dlg");
+const valores = () => [...$("filas").querySelectorAll("select")].map(s => s.value);
+
+function opciones(sel) {
+  return '<option value="">Selecciona una materia</option>' + MATERIAS.map(x =>
+    '<option value="' + x.c + '"' + (x.c === sel ? " selected" : "") + '>' + x.c + " " + esc(x.n) + " (sem. " + x.s + ")</option>").join("");
+}
+function pintarFilas(vals) {
+  $("filas").innerHTML = vals.map((v, i) =>
+    '<div class="fila"><div class="fila-in"><select aria-label="Prerrequisito ' + (i + 1) + '">' + opciones(v) + '</select>' +
+    '<button type="button" class="sec" data-i="' + i + '">Quitar</button></div><p class="err" role="alert" hidden></p></div>').join("");
+  $("agregar").disabled = vals.length >= 5;
+  $("vacio").hidden = vals.length > 0;
+}
+function abrir(clave) {
+  actual = porClave(clave);
+  $("dlg-t").textContent = "Reglas de " + actual.n;
+  $("dlg-sub").textContent = actual.c + ", semestre " + actual.s + ", " + actual.cr + " créditos";
+  pintarFilas(actual.p.slice());
+  $("rq").value = actual.rq;
+  marcar($("rq"), $("err-rq"), "");
+  $("err-lista").hidden = true;
+  dlg.showModal();
+}
+$("agregar").addEventListener("click", () => {
+  pintarFilas(valores().concat(""));
+  const sels = $("filas").querySelectorAll("select");
+  sels[sels.length - 1].focus();
+});
+$("filas").addEventListener("click", e => {
+  const b = e.target.closest("button[data-i]");
+  if (!b) return;
+  pintarFilas(valores().filter((_, i) => i !== Number(b.dataset.i)));
+});
+$("cancelar").addEventListener("click", () => dlg.close());
+
+// Busca un camino materia -> prerrequisito -> ... -> materia con el cambio propuesto.
+function ciclo(m, claves) {
+  const vecinos = c => (c === m.c ? claves : porClave(c).p);
+  const visitar = (c, ruta) => {
+    if (c === m.c && ruta.length) return ruta.concat(c);
+    if (ruta.includes(c)) return null;
+    for (const q of vecinos(c)) {
+      const r = visitar(q, ruta.concat(c));
+      if (r) return r;
+    }
+    return null;
+  };
+  return visitar(m.c, []);
+}
+function validar(m, vals) {
+  const filas = {};
+  const vistos = new Set();
+  vals.forEach((c, i) => {
+    if (!c) filas[i] = "Selecciona una materia.";
+    else if (c === m.c) filas[i] = "Una materia no puede ser prerrequisito de sí misma.";
+    else if (vistos.has(c)) filas[i] = "Ya agregaste este prerrequisito.";
+    else if (porClave(c).s >= m.s) filas[i] = "Debe ser de un semestre menor al de la materia (semestre " + m.s + ").";
+    vistos.add(c);
+  });
+  let lista = vals.length > 5 ? "Una materia admite como máximo 5 prerrequisitos." : "";
+  if (!lista && !Object.keys(filas).length) {
+    const ruta = ciclo(m, vals);
+    if (ruta) lista = "Prerrequisito circular: " + ruta.map(c => porClave(c).n).join(" → ") + ".";
+  }
+  return { filas, lista };
+}
+$("form-pre").addEventListener("submit", e => {
+  e.preventDefault();
+  const vals = valores();
+  const { filas, lista } = validar(actual, vals);
+  const msgRq = entero($("rq").value, 0, PLAN_TOTAL, "Este campo es obligatorio. Escribe 0 si la materia no exige créditos.");
+  [...$("filas").children].forEach((f, i) => marcar(f.querySelector("select"), f.querySelector(".err"), filas[i] || ""));
+  $("err-lista").textContent = lista;
+  $("err-lista").hidden = !lista;
+  marcar($("rq"), $("err-rq"), msgRq);
+  if (Object.keys(filas).length || lista || msgRq) {
+    const primero = dlg.querySelector('[aria-invalid="true"]');
+    if (primero) primero.focus();
+    return;
+  }
+  const rq = Number($("rq").value);
+  const igual = JSON.stringify(vals) === JSON.stringify(actual.p) && rq === actual.rq;
+  dlg.close();
+  if (igual) { avisar("No hubo cambios en las reglas de «" + actual.n + "»."); return; }
+  actual.p = vals; actual.rq = rq; cfg.version++;
+  pintarVersion(); pintarTabla();
+  avisar("Reglas de «" + actual.n + "» guardadas. Versión de reglas " + cfg.version + ". El cambio quedó en la bitácora.");
+});
+
+// ---------- Menú ----------
+const btnMenu = $("btn-menu"), menu = $("menu");
+const cerrarMenu = () => { menu.hidden = true; btnMenu.setAttribute("aria-expanded", "false"); btnMenu.setAttribute("aria-label", "Abrir menú"); };
+btnMenu.addEventListener("click", () => {
+  const abrirM = menu.hidden;
+  menu.hidden = !abrirM;
+  btnMenu.setAttribute("aria-expanded", String(abrirM));
+  btnMenu.setAttribute("aria-label", abrirM ? "Cerrar menú" : "Abrir menú");
+});
+document.addEventListener("click", e => { if (!menu.hidden && !e.target.closest(".usuario")) cerrarMenu(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !menu.hidden) { cerrarMenu(); btnMenu.focus(); } });
+
+// ---------- Inicio ----------
+$("admin").textContent = ADMIN;
+$("r03").value = cfg.cr;
+$("r04").value = cfg.ma;
+pintarVersion();
+pintarTabla();
+</script>
+</body>
+</html>

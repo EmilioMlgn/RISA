@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recomendación de carga | RISA</title>
+<!--
+  Documento: Mockup de la pantalla de recomendación (US06)
+  Versión: 1
+  Fecha de última actualización: 2026-10-14
+  Autores: Malagón Ortiz Emilio, Sarmiento Almanza Carlos Emilio
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
+<style>
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --ink: #1B2430; --muted: #566273; --line: #D5DCE5; --navy: #1B396A;
+  --a: #28A745; --c: #007BFF; --r: #DC3545; --d: #FFC107; --p: #6C757D;
+  --appbar: #1B396A;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #12161C; --surface: #1B212A; --ink: #E8ECF1; --muted: #9AA6B5; --line: #2C3541; --navy: #9DBBEF; --appbar: #0F2444; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+/* Barra superior (igual que en la retícula) */
+.appbar { background: var(--appbar); color: #fff; }
+.appbar-in { max-width: 1360px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.marca { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.marca strong { font-size: 1.125rem; letter-spacing: 0.02em; }
+.marca span { font-size: 0.8125rem; opacity: 0.8; }
+.usuario { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.alumno { max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.btn-menu { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #fff; cursor: pointer; }
+.btn-menu:hover { background: rgba(255, 255, 255, 0.14); }
+.btn-menu:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; min-width: 230px; display: flex; flex-direction: column; padding: 6px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; }
+.menu[hidden] { display: none; }
+.menu a { padding: 10px 12px; border-radius: 6px; color: inherit; text-decoration: none; }
+.menu a:hover { background: color-mix(in srgb, var(--navy) 12%, var(--surface)); }
+.menu a:focus-visible { outline: 2px solid var(--navy); outline-offset: -2px; }
+.menu a[aria-current="page"] { font-weight: 600; color: var(--navy); }
+.menu a:last-child { margin-top: 6px; border-top: 1px solid var(--line); border-radius: 0 0 6px 6px; }
+@media (max-width: 640px) { .marca span { display: none; } }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding: 24px 20px 40px; }
+h1 { margin: 0 0 4px; font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; color: var(--navy); }
+h2 { margin: 0; font-size: 1.0625rem; font-weight: 700; }
+.sub { margin: 0; color: var(--muted); }
+
+/* Selector solo para revisar el mockup */
+.demo { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0 20px; padding: 8px 10px; border: 1px dashed var(--line); border-radius: 8px; font-size: 0.8125rem; color: var(--muted); }
+.demo button { padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.demo button[aria-pressed="true"] { border-color: var(--navy); background: var(--navy); color: var(--surface); font-weight: 600; }
+
+/* Resumen */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat { padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.stat small { display: block; color: var(--muted); font-size: 0.8125rem; }
+.stat strong { font-size: 1.5rem; line-height: 1.2; }
+.medidor { height: 8px; margin-top: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.medidor span { display: block; height: 100%; background: var(--c); }
+
+/* Lista de materias recomendadas */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.panel-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); }
+th { font-size: 0.8125rem; font-weight: 600; color: var(--muted); background: color-mix(in srgb, var(--navy) 5%, var(--surface)); }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tbody tr { border-left: 6px solid var(--c); }
+tbody tr[data-rep] { border-left-color: var(--r); }
+tfoot td { font-weight: 700; border-bottom: 0; }
+.rep { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--r); color: var(--r); font-size: 0.6875rem; font-weight: 600; vertical-align: middle; }
+.fuera { margin: 0; padding: 12px 16px; font-size: 0.8125rem; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* Mensaje informativo sin materias */
+.vacio { display: grid; justify-items: center; gap: 8px; padding: 40px 20px; text-align: center; }
+.vacio svg { color: var(--navy); }
+.vacio h2 { color: var(--navy); }
+.vacio p { max-width: 520px; margin: 0; color: var(--muted); }
+.vacio a { margin-top: 8px; padding: 9px 14px; border: 1px solid var(--navy); border-radius: 6px; color: var(--navy); font-weight: 600; text-decoration: none; }
+
+.aviso { display: flex; gap: 10px; margin-top: 16px; padding: 12px 14px; border: 1px solid var(--line); border-left: 4px solid var(--d); border-radius: 6px; background: var(--surface); font-size: 0.8125rem; color: var(--muted); }
+
+/* Celular: cada materia como tarjeta */
+@media (max-width: 640px) {
+  thead { display: none; }
+  table, tbody, tfoot, tr, td { display: block; }
+  tbody tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  td { padding: 0; border: 0; }
+  td:first-child { grid-column: 1 / -1; font-weight: 600; }
+  td.num { text-align: left; color: var(--muted); font-size: 0.8125rem; }
+  td[data-k]::before { content: attr(data-k) " "; }
+  tfoot tr { display: flex; justify-content: space-between; padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="marca"><strong>RISA</strong><span>Retícula Interactiva de Seguimiento Académico</span></div>
+    <div class="usuario">
+      <span class="alumno" id="alumno"></span>
+      <button type="button" class="btn-menu" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="Menú principal" hidden>
+        <a href="#">Retícula</a>
+        <a href="#" aria-current="page">Recomendación de carga</a>
+        <a href="#">Historial académico</a>
+        <a href="#">Cerrar sesión</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Recomendación de carga académica</h1>
+  <p class="sub" id="periodo"></p>
+
+  <!-- Solo para la revisión del mockup. Se elimina en producción. -->
+  <div class="demo" role="group" aria-label="Vista del mockup">
+    Vista del mockup:
+    <button type="button" data-vista="con" aria-pressed="true">Con materias</button>
+    <button type="button" data-vista="sin" aria-pressed="false">Sin materias disponibles</button>
+  </div>
+
+  <section class="stats" id="stats" aria-label="Resumen de la recomendación"></section>
+  <section class="panel" id="panel" aria-live="polite"></section>
+
+  <p class="aviso">La recomendación es orientativa y no sustituye la validación ni la inscripción oficial de Control Escolar.</p>
+</div>
+
+<script>
+// Datos de ejemplo. intento > 1 significa que la materia se recursa.
+const CON_MATERIAS = {
+  periodo: "Enero-Junio 2027",
+  cargaMaxima: 36,
+  materias: [
+    { nombre: "Cálculo Vectorial", creditos: 5, semestre: 3, intento: 2 },
+    { nombre: "Ecuaciones Diferenciales", creditos: 5, semestre: 4, intento: 1 },
+    { nombre: "Sistemas Operativos", creditos: 4, semestre: 4, intento: 1 },
+    { nombre: "Fundamentos de Base de Datos", creditos: 5, semestre: 4, intento: 1 },
+    { nombre: "Métodos Numéricos", creditos: 4, semestre: 4, intento: 1 },
+    { nombre: "Simulación", creditos: 5, semestre: 4, intento: 1 },
+    { nombre: "Tópicos Avanzados de Programación", creditos: 5, semestre: 4, intento: 1 }
+  ],
+  // Elegibles que no entraron por exceder la carga máxima
+  excluidas: [{ nombre: "Principios Eléctricos y Aplicaciones Digitales", creditos: 5, semestre: 4 }]
+};
+const SIN_MATERIAS = { periodo: "Enero-Junio 2027", cargaMaxima: 36, materias: [], excluidas: [] };
+
+// Conexión al backend (opcional). Con null se usan los datos de ejemplo.
+// Respuesta esperada: { periodo, cargaMaxima, materias: [{ nombre, creditos, semestre, intento }], excluidas: [...] }
+// Ejemplo en Laravel: const API_URL = "/api/recomendacion";
+const API_URL = null;
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const suma = lista => lista.reduce((s, m) => s + Number(m.creditos), 0);
+
+function pintar(d) {
+  const total = suma(d.materias);
+  const pct = d.cargaMaxima ? Math.min(100, Math.round(total / d.cargaMaxima * 100)) : 0;
+
+  document.getElementById("periodo").textContent = "Materias sugeridas para el periodo " + d.periodo + ", según tu avance y los prerrequisitos.";
+
+  document.getElementById("stats").innerHTML =
+    '<div class="stat"><small>Materias recomendadas</small><strong>' + d.materias.length + '</strong></div>' +
+    '<div class="stat"><small>Créditos recomendados</small><strong>' + total + '</strong> de ' + d.cargaMaxima +
+      '<div class="medidor" role="img" aria-label="' + total + ' de ' + d.cargaMaxima + ' créditos"><span style="width:' + pct + '%"></span></div></div>' +
+    '<div class="stat"><small>Carga máxima permitida</small><strong>' + d.cargaMaxima + '</strong> créditos</div>';
+
+  const panel = document.getElementById("panel");
+
+  if (!d.materias.length) {
+    panel.innerHTML =
+      '<div class="vacio">' +
+        '<svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.01"/></svg>' +
+        '<h2>No hay materias disponibles para recomendarte</h2>' +
+        '<p>Por ahora no tienes materias que cumplan sus prerrequisitos o los créditos requeridos. Esto puede pasar si ya estás cursando todas las materias disponibles o si te falta aprobar materias seriadas.</p>' +
+        '<p>Revisa tu retícula o acércate a tu asesor para planear tu siguiente periodo.</p>' +
+        '<a href="#">Ver mi retícula</a>' +
+      '</div>';
+    return;
+  }
+
+  panel.innerHTML =
+    '<div class="panel-h"><h2>Materias recomendadas</h2><span class="sub">Ordenadas por prioridad</span></div>' +
+    '<table>' +
+      '<thead><tr><th scope="col">Materia</th><th scope="col" class="num">Semestre</th><th scope="col" class="num">Créditos</th></tr></thead>' +
+      '<tbody>' + d.materias.map(m =>
+        '<tr' + (m.intento > 1 ? ' data-rep' : '') + '>' +
+          '<td>' + esc(m.nombre) + (m.intento > 1 ? '<span class="rep">Repetición</span>' : '') + '</td>' +
+          '<td class="num" data-k="Semestre">' + m.semestre + '</td>' +
+          '<td class="num" data-k="Créditos">' + m.creditos + '</td>' +
+        '</tr>').join("") + '</tbody>' +
+      '<tfoot><tr><td colspan="2">Total</td><td class="num">' + total + ' créditos</td></tr></tfoot>' +
+    '</table>' +
+    (d.excluidas && d.excluidas.length
+      ? '<p class="fuera">No se incluyó por exceder la carga máxima: ' +
+        d.excluidas.map(m => esc(m.nombre) + ' (' + m.creditos + ' créditos)').join(", ") + '.</p>'
+      : '');
+}
+
+if (API_URL) {
+  fetch(API_URL, { headers: { Accept: "application/json" }, credentials: "same-origin" })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(pintar)
+    .catch(() => {
+      document.getElementById("panel").innerHTML = '<div class="vacio"><h2>No se pudo cargar la recomendación</h2><p>Intenta de nuevo en unos minutos.</p></div>';
+    });
+} else {
+  pintar(CON_MATERIAS);
+}
+
+// Selector del mockup
+document.querySelectorAll(".demo button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".demo button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  pintar(b.dataset.vista === "con" ? CON_MATERIAS : SIN_MATERIAS);
+}));
+
+// Nombre del estudiante (ejemplo). En Laravel, usa el nombre del usuario autenticado.
+document.getElementById("alumno").textContent = "Ana Sofía Ramírez Torres";
+
+// Menú
+const btnMenu = document.getElementById("btn-menu");
+const menu = document.getElementById("menu");
+const cerrarMenu = () => {
+  menu.hidden = true;
+  btnMenu.setAttribute("aria-expanded", "false");
+  btnMenu.setAttribute("aria-label", "Abrir menú");
+};
+btnMenu.addEventListener("click", () => {
+  const abrir = menu.hidden;
+  menu.hidden = !abrir;
+  btnMenu.setAttribute("aria-expanded", String(abrir));
+  btnMenu.setAttribute("aria-label", abrir ? "Cerrar menú" : "Abrir menú");
+});
+document.addEventListener("click", e => { if (!menu.hidden && !e.target.closest(".usuario")) cerrarMenu(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !menu.hidden) { cerrarMenu(); btnMenu.focus(); } });
+</script>
+</body>
+</html>
