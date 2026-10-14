@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retícula | RISA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
+<style>
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --ink: #1B2430; --muted: #566273; --line: #D5DCE5; --navy: #1B396A;
+  --a: #28A745; --c: #007BFF; --r: #DC3545; --d: #FFC107; --p: #6C757D;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #12161C; --surface: #1B212A; --ink: #E8ECF1; --muted: #9AA6B5; --line: #2C3541; --navy: #9DBBEF; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+[data-e="A"] { --s: var(--a); }
+[data-e="C"] { --s: var(--c); }
+[data-e="R"] { --s: var(--r); }
+[data-e="D"] { --s: var(--d); }
+[data-e="P"] { --s: var(--p); }
+
+.wrap { max-width: 1360px; margin: 0 auto; padding: 24px 20px 40px; }
+.top { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: flex-start; margin: 4px 0 16px; }
+h1 { margin: 0 0 4px; font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; color: var(--navy); }
+.sub { margin: 0; color: var(--muted); }
+.progress { max-width: 460px; margin-bottom: 20px; }
+.progress p { margin: 0 0 8px; }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line); }
+.bar span { background: var(--s); }
+.progress .sub { margin: 8px 0 0; font-size: 0.8125rem; }
+
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 20px; margin: 0 0 24px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.lg { display: grid; grid-template-columns: 16px 1fr; gap: 0 10px; }
+.sw { width: 16px; height: 16px; margin-top: 2px; border-radius: 4px; background: var(--s); }
+.lg b { font-weight: 600; }
+.lg small { display: block; color: var(--muted); font-size: 0.8125rem; }
+
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr); gap: 12px; align-items: start; overflow-x: auto; padding-bottom: 14px; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.col-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 0 2px 8px; border-bottom: 2px solid var(--line); }
+.col-h h2 { margin: 0; font-size: 1rem; font-weight: 700; }
+.col-h span { color: var(--muted); font-size: 0.8125rem; }
+.col-h .now { color: var(--navy); font-weight: 600; }
+
+.card { padding: 10px 12px; border: 1px solid var(--line); border-left: 6px solid var(--s); border-radius: 6px; background: color-mix(in srgb, var(--s) 14%, var(--surface)); }
+.card:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.card h3 { margin: 0 0 6px; font-size: 0.875rem; line-height: 1.3; font-weight: 600; }
+.meta { display: flex; justify-content: space-between; gap: 8px; font-size: 0.75rem; color: var(--muted); }
+.st { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; }
+.st::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--s); }
+.rep { display: inline-block; margin-top: 6px; padding: 1px 8px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 0.6875rem; color: var(--muted); }
+
+:root { --appbar: #1B396A; }
+@media (prefers-color-scheme: dark) { :root { --appbar: #0F2444; } }
+
+.appbar { background: var(--appbar); color: #fff; }
+.appbar-in { max-width: 1360px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.marca { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.marca strong { font-size: 1.125rem; letter-spacing: 0.02em; }
+.marca span { font-size: 0.8125rem; opacity: 0.8; }
+.usuario { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.alumno { max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.btn-menu { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 8px; background: transparent; color: #fff; cursor: pointer; }
+.btn-menu:hover { background: rgba(255, 255, 255, 0.14); }
+.btn-menu:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; min-width: 230px; display: flex; flex-direction: column; padding: 6px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; }
+.menu[hidden] { display: none; }
+.menu a { padding: 10px 12px; border-radius: 6px; color: inherit; text-decoration: none; }
+.menu a:hover { background: color-mix(in srgb, var(--navy) 12%, var(--surface)); }
+.menu a:focus-visible { outline: 2px solid var(--navy); outline-offset: -2px; }
+.menu a[aria-current="page"] { font-weight: 600; color: var(--navy); }
+.menu a:last-child { margin-top: 6px; border-top: 1px solid var(--line); border-radius: 0 0 6px 6px; }
+@media (max-width: 640px) { .marca span { display: none; } }
+
+.btn-print { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 9px 14px; border: 1px solid var(--navy); border-radius: 6px; background: var(--surface); color: var(--navy); font: inherit; font-weight: 600; cursor: pointer; }
+.btn-print:hover { background: color-mix(in srgb, var(--navy) 10%, var(--surface)); }
+.btn-print:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+
+.solo-impresion { display: none; }
+@page { size: landscape; margin: 10mm; }
+@media print {
+  :root { --bg: #fff; --surface: #fff; --ink: #000; --muted: #333; --line: #aaa; --navy: #1B396A; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; font-size: 12px; }
+  .appbar, .btn-print, #estado { display: none; }
+  .wrap { max-width: none; padding: 0; }
+  .solo-impresion { display: block; margin: 0 0 10px; color: var(--muted); }
+  .top { margin: 0 0 6px; }
+  h1 { font-size: 1.25rem; }
+  .progress { margin-bottom: 10px; }
+  .legend { margin-bottom: 12px; padding: 8px 10px; gap: 6px 12px; }
+  .lg small { font-size: 0.6875rem; }
+  .board { grid-auto-columns: minmax(0, 1fr); gap: 6px; overflow: visible; padding-bottom: 0; }
+  .col { gap: 5px; }
+  .col-h h2 { font-size: 0.8125rem; }
+  .col-h span { font-size: 0.6875rem; }
+  .card { padding: 5px 6px; border-left-width: 4px; break-inside: avoid; }
+  .card h3 { margin-bottom: 3px; font-size: 0.625rem; }
+  .meta { flex-wrap: wrap; font-size: 0.5625rem; }
+  .rep { margin-top: 3px; font-size: 0.5625rem; }
+}
+</style>
+</head>
+<body>
+<!-- Maqueta: los estatus Cursando, Disponible y Pendiente son ilustrativos. En produccion los datos vienen del backend. -->
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="marca"><strong>RISA</strong><span>Retícula Interactiva de Seguimiento Académico</span></div>
+    <div class="usuario">
+      <span class="alumno" id="alumno"></span>
+      <button type="button" class="btn-menu" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="Menú principal" hidden>
+        <a href="#" aria-current="page">Retícula</a>
+        <a href="#">Recomendación de carga</a>
+        <a href="#">Historial académico</a>
+        <a href="#">Cerrar sesión</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Retícula de Ingeniería en Sistemas Computacionales</h1>
+      <p class="sub">Instituto Tecnológico de Celaya. Tu avance por semestre.</p>
+    </div>
+    <button type="button" class="btn-print" id="imprimir">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg>
+      Imprimir retícula
+    </button>
+  </div>
+  <p class="solo-impresion" id="sello"></p>
+
+  <div class="progress">
+    <p id="resumen"></p>
+    <div class="bar" id="barra" role="img"></div>
+    <p class="sub" id="estado" role="status"></p>
+  </div>
+
+  <section class="legend" id="leyenda" aria-label="Leyenda de estatus"></section>
+  <main class="board" id="retícula"></main>
+</div>
+
+<script>
+// Cada materia: [nombre, creditos, estatus, intento]. Estatus: A aprobada, C cursando, R reprobada, D disponible, P pendiente.
+const E = {
+  A: ["Aprobada", "Calificación de 70 o más"],
+  C: ["Cursando", "Inscrita en este periodo"],
+  R: ["Reprobada", "Calificación menor a 70, por repetir"],
+  D: ["Disponible", "Ya cumples sus prerrequisitos"],
+  P: ["Pendiente", "Faltan prerrequisitos o créditos"]
+};
+const SEM = [
+  [["Fundamentos de Investigación",4,"A"],["Cálculo Diferencial",5,"A"],["Química",4,"A"],["Fundamentos de Programación",5,"A"],["Matemáticas Discretas",5,"A"]],
+  [["Desarrollo Sustentable",5,"A"],["Cálculo Integral",5,"A"],["Taller de Ética",4,"A"],["Contabilidad Financiera",4,"A"],["Programación Orientada a Objetos",5,"A"],["Probabilidad y Estadística",5,"A"]],
+  [["Álgebra Lineal",5,"A"],["Cálculo Vectorial",5,"A"],["Estructura de Datos",5,"A",2],["Cultura Empresarial",4,"A"],["Investigación de Operaciones",4,"A"],["Física General",5,"A"],["Taller de Administración",4,"A"]],
+  [["Ecuaciones Diferenciales",5,"A"],["Sistemas Operativos",4,"A"],["Fundamentos de Base de Datos",5,"A"],["Métodos Numéricos",4,"A"],["Principios Eléctricos y Aplicaciones Digitales",5,"A"],["Simulación",5,"A"],["Tópicos Avanzados de Programación",5,"A"]],
+  [["Fundamentos de Telecomunicaciones",4,"A"],["Taller de Base de Datos",4,"A"],["Taller de Sistemas Operativos",4,"A"],["Fundamentos de Ingeniería de Software",4,"A"],["Graficación",4,"A"],["Inteligencia Artificial",4,"A"],["Arquitectura de Computadoras",5,"A"]],
+  [["Programación Web",5,"A"],["Administración de Base de Datos",5,"A"],["Lenguajes de Interfaz",4,"A"],["Programación Lógica y Funcional",4,"A"],["Ingeniería de Software",5,"A"],["Lenguajes y Autómatas I",5,"A"],["Redes de Computadoras",5,"A"]],
+  [["Taller de Investigación I",4,"C"],["Conmutación y Enrutamiento en Redes de Datos",5,"A"],["Lenguajes y Autómatas II",5,"A"],["Sistemas Programables",4,"C"],["Gestión de Proyectos de Software",6,"C"]],
+  [["Taller de Investigación II",4,"P"],["Administración de Redes",4,"D"]],
+  [["Residencia Profesional",10,"P"]]
+];
+
+// Conexión al backend (opcional). Con null se muestran los datos de ejemplo de SEM.
+// Ejemplo en Laravel: const API_URL = "/api/reticula";
+const API_URL = null;
+const REFRESCO_MS = 30000;
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const cred = lista => lista.reduce((s, m) => s + m[1], 0);
+
+const tarjeta = m =>
+  '<article class="card" data-e="' + m[2] + '" tabindex="0" aria-label="' + esc(m[0]) + ', ' + m[1] + ' créditos, ' + E[m[2]][0] + '">' +
+  '<h3>' + esc(m[0]) + '</h3>' +
+  '<div class="meta"><span>' + m[1] + ' créditos</span><span class="st">' + E[m[2]][0] + '</span></div>' +
+  (m[3] > 1 ? '<span class="rep">Repetición</span>' : '') +
+  '</article>';
+
+function pintar(sem) {
+  const todas = sem.flat();
+  const total = cred(todas);
+  const aprobados = cred(todas.filter(m => m[2] === "A"));
+  const pct = total ? Math.round(aprobados / total * 100) : 0;
+
+  document.getElementById("resumen").innerHTML =
+    "Has aprobado <strong>" + aprobados + " de " + total + " créditos</strong> (" + pct + " %)";
+
+  const barra = document.getElementById("barra");
+  barra.setAttribute("aria-label", aprobados + " de " + total + " créditos aprobados");
+  barra.innerHTML = Object.keys(E).map(k => {
+    const c = cred(todas.filter(m => m[2] === k));
+    return c ? '<span data-e="' + k + '" style="width:' + (c / total * 100) + '%" title="' + E[k][0] + ': ' + c + ' créditos"></span>' : "";
+  }).join("");
+
+  document.getElementById("leyenda").innerHTML = Object.keys(E).map(k => {
+    const n = todas.filter(m => m[2] === k).length;
+    return '<div class="lg" data-e="' + k + '"><span class="sw"></span><div><b>' + E[k][0] + '</b> (' + n + ')<small>' + E[k][1] + '</small></div></div>';
+  }).join("");
+
+  document.getElementById("retícula").innerHTML = sem.length
+    ? sem.map((materias, i) =>
+        '<section class="col" aria-label="Semestre ' + (i + 1) + '">' +
+        '<div class="col-h"><h2>Semestre ' + (i + 1) + '</h2><span>' + cred(materias) + ' créditos</span>' +
+        (materias.some(m => m[2] === "C") ? '<span class="now">Semestre actual</span>' : '') +
+        '</div>' + materias.map(tarjeta).join("") + '</section>'
+      ).join("")
+    : '<p class="sub">Aún no hay materias registradas en tu retícula.</p>';
+}
+
+// Convierte la respuesta del backend: [{ semestre, materias: [{ nombre, creditos, estatus, intento }] }]
+function normalizar(datos) {
+  const n = Math.max(0, ...datos.map(s => s.semestre));
+  const sem = Array.from({ length: n }, () => []);
+  datos.forEach(s => {
+    sem[s.semestre - 1] = s.materias.map(m =>
+      [m.nombre, Number(m.creditos), E[m.estatus] ? m.estatus : "P", Number(m.intento) || 1]);
+  });
+  return sem;
+}
+
+let ultimo = "";
+function actualizar() {
+  const estado = document.getElementById("estado");
+  fetch(API_URL, { headers: { Accept: "application/json" }, credentials: "same-origin" })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(datos => {
+      const sem = normalizar(datos);
+      const huella = JSON.stringify(sem);
+      if (huella !== ultimo) { ultimo = huella; pintar(sem); }
+      estado.textContent = "Actualizado a las " + new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+    })
+    .catch(() => { estado.textContent = "No se pudo actualizar. Se muestra la última versión."; });
+}
+
+if (API_URL) {
+  actualizar();
+  setInterval(() => { if (!document.hidden) actualizar(); }, REFRESCO_MS);
+} else {
+  pintar(SEM);
+}
+
+// Nombre del estudiante (ejemplo). En Laravel, usa el nombre del usuario autenticado.
+const ESTUDIANTE = "Ana Sofía Ramírez Torres";
+document.getElementById("alumno").textContent = ESTUDIANTE;
+document.getElementById("sello").textContent = "Estudiante: " + ESTUDIANTE + ". Impreso el " +
+  new Date().toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }) + ".";
+document.getElementById("imprimir").addEventListener("click", () => window.print());
+
+const btnMenu = document.getElementById("btn-menu");
+const menu = document.getElementById("menu");
+const cerrarMenu = () => {
+  menu.hidden = true;
+  btnMenu.setAttribute("aria-expanded", "false");
+  btnMenu.setAttribute("aria-label", "Abrir menú");
+};
+btnMenu.addEventListener("click", () => {
+  const abrir = menu.hidden;
+  menu.hidden = !abrir;
+  btnMenu.setAttribute("aria-expanded", String(abrir));
+  btnMenu.setAttribute("aria-label", abrir ? "Cerrar menú" : "Abrir menú");
+});
+document.addEventListener("click", e => {
+  if (!menu.hidden && !e.target.closest(".usuario")) cerrarMenu();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !menu.hidden) { cerrarMenu(); btnMenu.focus(); }
+});
+</script>
+</body>
+</html>
