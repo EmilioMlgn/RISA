@@ -1,0 +1,66 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: risa_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+      - APP_DEBUG=${APP_DEBUG:-true}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-risa_db}
+      - DB_USERNAME=${DB_USERNAME:-risa_user}
+      - DB_PASSWORD=${DB_PASSWORD:-risa_secret}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - risa-network
+
+  web:
+    image: nginx:alpine
+    container_name: risa_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - risa-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: risa_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-risa_db}
+      POSTGRES_USER: ${DB_USERNAME:-risa_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-risa_secret}
+    ports:
+      - "5432:5432"
+    volumes:
+      - risa_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-risa_user} -d ${DB_DATABASE:-risa_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - risa-network
+
+volumes:
+  risa_pgdata:
+    driver: local
+
+networks:
+  risa-network:
+    driver: bridge
