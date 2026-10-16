@@ -579,9 +579,16 @@ function abrirModalMateria(id) {
     fetch(`/api/materias/${id}`, {
         headers: { 'Accept': 'application/json' }
     })
-    .then(r => r.json())
+    .then(r => {
+        if (!r.ok) {
+            throw new Error(`Error ${r.status}: No se pudo consultar la materia`);
+        }
+        return r.json();
+    })
     .then(resp => {
-        if (!resp.success) return;
+        if (!resp || !resp.success) {
+            throw new Error(resp?.message || 'No se recibieron datos de la asignatura.');
+        }
         const data = resp.data;
         document.getElementById('modal-clave').textContent = data.clave;
         document.getElementById('modal-materia-titulo').textContent = data.nombre;
