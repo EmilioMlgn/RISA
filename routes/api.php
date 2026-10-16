@@ -22,8 +22,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/recomendacion/guardar', [RecommendationController::class, 'save']);
 });
 
-// Alias compatible para consultas directas /api/reticula
+// Alias compatibles para consultas directas /api/...
 Route::get('/reticula', [ReticulaController::class, 'index']);
-Route::get('/recomendacion', [RecommendationController::class, 'recommend']);
+Route::get('/materias/{id}', [ReticulaController::class, 'show']);
 Route::post('/materias/{id}/comentarios', [ReticulaController::class, 'storeComment']);
 Route::post('/historial/actualizar', [ReticulaController::class, 'updateStatus']);
+Route::get('/recomendacion', [RecommendationController::class, 'recommend']);
+Route::post('/recomendacion/guardar', [RecommendationController::class, 'save']);

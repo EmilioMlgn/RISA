@@ -60,6 +60,33 @@ class ReticulaApiTest extends TestCase
     }
 
     /**
+     * Prueba que el endpoint /api/materias/{id} devuelve el detalle completo de la materia.
+     */
+    public function test_endpoint_api_detalle_materia_retorna_datos_completos(): void
+    {
+        $materia = Subject::first();
+        $response = $this->getJson("/api/materias/{$materia->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'success',
+            'data' => [
+                'id',
+                'clave',
+                'nombre',
+                'creditos',
+                'horasTeoria',
+                'horasPractica',
+                'semestreSugerido',
+                'estatus',
+                'prerrequisitos',
+                'materiasSubsecuentes',
+                'comentariosDocentes',
+            ],
+        ]);
+    }
+
+    /**
      * Prueba que el motor de recomendación devuelve la sugerencia de carga y proyección.
      */
     public function test_endpoint_api_recomendacion_calcula_carga_y_proyeccion(): void
