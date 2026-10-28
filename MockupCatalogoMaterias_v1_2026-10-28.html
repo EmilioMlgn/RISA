@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo de materias | RISA</title>
+<!--
+  Documento: Mockup de la pantalla de administración del catálogo de materias
+  Versión: 1
+  Fecha de última actualización: 2026-10-28
+  Autores: Velazquez Teran Adrian Esteban, Zamora Martinez Samuel
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
+<style>
+:root {
+  --bg: #F3F5F8;
+  --surface: #FFFFFF;
+  --ink: #1B2430;
+  --muted: #566273;
+  --line: #D5DCE5;
+  --navy: #1B396A;
+  --appbar: #1B396A;
+  --err: #B02A37;
+  --ok: #1E7E34;
+  --warn: #8A5300;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161C;
+    --surface: #1B212A;
+    --ink: #E8ECF1;
+    --muted: #9AA6B5;
+    --line: #2C3541;
+    --navy: #9DBBEF;
+    --appbar: #0F2444;
+    --err: #FF8A94;
+    --ok: #6FD18A;
+    --warn: #F5B963;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.45 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+button, input, select { font: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.appbar { background: var(--appbar); color: #fff; }
+.appbar-in {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.marca { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.marca strong { font-size: 1.125rem; letter-spacing: 0.02em; }
+.marca span { font-size: 0.8125rem; opacity: 0.8; }
+.usuario { position: relative; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.quien { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; min-width: 0; }
+.quien b { max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quien small { font-size: 0.75rem; opacity: 0.85; }
+.btn-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+.btn-menu:hover { background: rgba(255, 255, 255, 0.14); }
+.btn-menu:focus-visible { outline-color: #fff; }
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+.menu[hidden] { display: none; }
+.menu a {
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+.menu a:hover { background: color-mix(in srgb, var(--navy) 12%, var(--surface)); }
+.menu a[aria-current="page"] { font-weight: 600; color: var(--navy); }
+.menu a:last-child { margin-top: 6px; border-top: 1px solid var(--line); border-radius: 0 0 6px 6px; }
+@media (max-width: 640px) { .marca span { display: none; } }
+
+.wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 56px; }
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px 24px;
+  margin-bottom: 16px;
+}
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+h2 { margin: 0; font-size: 1.0625rem; font-weight: 700; }
+.sub { margin: 0; color: var(--muted); }
+.acciones-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--navy) 4%, var(--surface));
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.demo strong { color: var(--ink); margin-right: 4px; }
+.demo button {
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.demo button:hover { border-color: var(--navy); color: var(--navy); }
+
+.banner {
+  margin: 0 0 16px;
+  padding: 11px 14px;
+  border: 1px solid var(--ok);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ok) 12%, var(--surface));
+  font-weight: 600;
+}
+.banner.error {
+  border-color: var(--err);
+  background: color-mix(in srgb, var(--err) 12%, var(--surface));
+  color: var(--err);
+}
+.banner[hidden] { display: none; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.stat {
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.stat small { display: block; color: var(--muted); font-size: 0.8125rem; }
+.stat strong { display: block; margin-top: 2px; font-size: 1.375rem; color: var(--navy); }
+
+.panel {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.filtros {
+  display: grid;
+  grid-template-columns: 1fr repeat(2, minmax(170px, 210px));
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+@media (max-width: 780px) {
+  .filtros { grid-template-columns: 1fr; }
+}
+
+label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.875rem; }
+.req { color: var(--err); font-weight: 700; }
+input[type="text"], select {
+  width: 100%;
+  padding: 9px 10px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--muted);
+  border-radius: 6px;
+}
+input[readonly], input:disabled {
+  background: color-mix(in srgb, var(--muted) 12%, var(--surface));
+  color: var(--muted);
+  cursor: not-allowed;
+}
+[aria-invalid="true"] {
+  border-color: var(--err);
+  box-shadow: 0 0 0 1px var(--err);
+}
+.hint { margin: 4px 0 0; color: var(--muted); font-size: 0.8125rem; }
+.err { margin: 4px 0 0; color: var(--err); font-size: 0.8125rem; font-weight: 600; }
+.err[hidden] { display: none; }
+
+.btn {
+  padding: 9px 16px;
+  border: 1px solid var(--navy);
+  border-radius: 6px;
+  background: var(--navy);
+  color: var(--surface);
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover { opacity: 0.92; }
+.btn-danger {
+  padding: 9px 16px;
+  border: 1px solid var(--err);
+  border-radius: 6px;
+  background: var(--err);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-warn {
+  padding: 9px 16px;
+  border: 1px solid var(--warn);
+  border-radius: 6px;
+  background: var(--warn);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sec {
+  padding: 7px 12px;
+  border: 1px solid var(--navy);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--navy);
+  font-weight: 600;
+  cursor: pointer;
+}
+.sec:hover { background: color-mix(in srgb, var(--navy) 10%, var(--surface)); }
+.sec-danger {
+  padding: 7px 12px;
+  border: 1px solid var(--err);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--err);
+  font-weight: 600;
+  cursor: pointer;
+}
+.sec-danger:hover { background: color-mix(in srgb, var(--err) 10%, var(--surface)); }
+.sec:disabled, .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.tabla-w { overflow-x: auto; }
+table { width: 100%; min-width: 920px; border-collapse: collapse; }
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+th { color: var(--muted); font-size: 0.8125rem; font-weight: 600; }
+.num { text-align: right; }
+.acciones-celda { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: nowrap; }
+.chip {
+  display: inline-block;
+  padding: 2px 9px;
+  margin: 0 4px 4px 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.78rem;
+}
+.estado {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.estado-activa {
+  color: var(--ok);
+  border: 1px solid var(--ok);
+  background: color-mix(in srgb, var(--ok) 12%, var(--surface));
+}
+.estado-inactiva {
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--muted) 12%, var(--surface));
+}
+.fila-inactiva td { opacity: 0.72; }
+.meta-uso { display: block; color: var(--muted); font-size: 0.75rem; margin-top: 2px; }
+
+dialog {
+  width: min(620px, calc(100% - 32px));
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.48); }
+.grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  margin-top: 14px;
+}
+.col-full { grid-column: 1 / -1; }
+@media (max-width: 560px) {
+  .grid-form { grid-template-columns: 1fr; }
+}
+fieldset { margin: 16px 0 6px; padding: 0; border: 0; }
+legend { margin-bottom: 6px; padding: 0; font-weight: 600; font-size: 0.875rem; }
+.fila-pre { margin-bottom: 8px; }
+.fila-pre-in { display: flex; gap: 8px; }
+.fila-pre-in select { flex: 1; min-width: 0; }
+.aviso {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--navy);
+  background: color-mix(in srgb, var(--navy) 8%, var(--surface));
+  font-size: 0.8125rem;
+}
+.aviso-warn {
+  border-left-color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 10%, var(--surface));
+}
+.aviso-err {
+  border-left-color: var(--err);
+  background: color-mix(in srgb, var(--err) 10%, var(--surface));
+}
+.acciones-dlg {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+.resumen-materia {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 0.875rem;
+}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="marca">
+      <strong>RISA</strong>
+      <span>Retícula Interactiva de Seguimiento Académico</span>
+    </div>
+    <div class="usuario">
+      <div class="quien">
+        <b id="nombre-usuario">Roberto Salinas Vega</b>
+        <small id="rol-usuario">Administrador</small>
+      </div>
+      <button type="button" class="btn-menu" id="btn-menu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="Menú principal" hidden>
+        <a href="/reticula">Retícula interactiva</a>
+        <a href="/configuracion-reglas">Reglas de recomendación</a>
+        <a href="/catalogo-materias" aria-current="page">Catálogo de materias</a>
+        <a href="#" id="menu-bitacora">Bitácora de cambios</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="demo" role="region" aria-label="Escenarios rápidos de validación">
+    <strong>Escenarios de prueba (SQA):</strong>
+    <button type="button" id="sc-alta-vacia">1. Alta con campos vacíos</button>
+    <button type="button" id="sc-alta-invalida">2. Alta con formatos/rangos inválidos</button>
+    <button type="button" id="sc-clave-dup">3. Clave duplicada (AED1285)</button>
+    <button type="button" id="sc-del-bloqueada">4. Eliminar con dependientes (AED1285)</button>
+    <button type="button" id="sc-del-historial">5. Eliminar con historial (SCB1001 → Baja lógica)</button>
+    <button type="button" id="sc-del-fisica">6. Eliminar sin historial (SCD1027 → Física)</button>
+    <button type="button" id="sc-rol">7. Alternar rol: <span id="lbl-rol-demo">Administrador</span></button>
+  </div>
+
+  <p class="banner" id="banner" role="status" hidden></p>
+
+  <div class="top">
+    <div>
+      <h1>Administración del catálogo de materias</h1>
+      <p class="sub">Plan de estudios oficial: Ingeniería en Sistemas Computacionales (ISIC-2010-224). Gestiona el alta, edición, baja lógica y eliminación de asignaturas.</p>
+    </div>
+    <div class="acciones-top">
+      <button type="button" class="sec" id="btn-bitacora">Bitácora (<span id="cont-bitacora">0</span>)</button>
+      <button type="button" class="btn" id="btn-nueva">+ Dar de alta materia</button>
+    </div>
+  </div>
+
+  <div class="stats" aria-label="Resumen del catálogo">
+    <div class="stat">
+      <small>Materias activas en retícula</small>
+      <strong id="st-activas">0</strong>
+    </div>
+    <div class="stat">
+      <small>Materias inactivas (baja lógica)</small>
+      <strong id="st-inactivas">0</strong>
+    </div>
+    <div class="stat">
+      <small>Créditos totales del plan activo</small>
+      <strong id="st-creditos">0</strong>
+    </div>
+    <div class="stat">
+      <small>Rango permitido (Créditos / Semestre)</small>
+      <strong>1–10 cr. / Sem. 1–9</strong>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="t-lista">
+    <h2 id="t-lista" class="vh">Lista de materias del catálogo</h2>
+    <div class="filtros">
+      <div>
+        <label for="f-buscar">Buscar por clave o nombre</label>
+        <input id="f-buscar" type="text" placeholder="Ejemplo: SCD1018 o Estructura de Datos" autocomplete="off">
+      </div>
+      <div>
+        <label for="f-semestre">Filtrar por semestre</label>
+        <select id="f-semestre">
+          <option value="">Todos los semestres (1 a 9)</option>
+          <option value="1">Semestre 1</option>
+          <option value="2">Semestre 2</option>
+          <option value="3">Semestre 3</option>
+          <option value="4">Semestre 4</option>
+          <option value="5">Semestre 5</option>
+          <option value="6">Semestre 6</option>
+          <option value="7">Semestre 7</option>
+          <option value="8">Semestre 8</option>
+          <option value="9">Semestre 9</option>
+        </select>
+      </div>
+      <div>
+        <label for="f-estatus">Filtrar por estatus</label>
+        <select id="f-estatus">
+          <option value="">Todas (Activas e Inactivas)</option>
+          <option value="Activa">Solo Activas</option>
+          <option value="Inactiva">Solo Inactivas</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tabla-w">
+      <table>
+        <thead>
+          <tr>
+            <th>Clave</th>
+            <th>Nombre de la materia</th>
+            <th class="num">Semestre</th>
+            <th class="num">Créditos</th>
+            <th>Prerrequisitos</th>
+            <th>Estatus</th>
+            <th class="num">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-cuerpo"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- DIÁLOGO DE ALTA Y EDICIÓN -->
+<dialog id="dlg-form" aria-labelledby="dlg-form-titulo">
+  <form id="form-materia" novalidate>
+    <h2 id="dlg-form-titulo">Dar de alta materia</h2>
+    <p class="sub" id="dlg-form-sub">Los campos marcados con * son obligatorios. Todos los datos se validan antes de actualizar la retícula oficial.</p>
+
+    <div class="grid-form">
+      <div>
+        <label for="in-clave">Clave <span class="req">*</span></label>
+        <input id="in-clave" type="text" maxlength="10" autocomplete="off" aria-describedby="h-clave err-clave">
+        <p class="hint" id="h-clave">De 5 a 10 caracteres (letras mayúsculas y dígitos, sin espacios ni símbolos). Ej. SCD1018.</p>
+        <p class="err" id="err-clave" role="alert" hidden></p>
+      </div>
+
+      <div>
+        <label for="in-estatus">Estatus del sistema</label>
+        <input id="in-estatus" type="text" value="Activa" readonly aria-describedby="h-estatus">
+        <p class="hint" id="h-estatus">Asignado por el sistema. Solo cambia mediante baja lógica.</p>
+      </div>
+
+      <div class="col-full">
+        <label for="in-nombre">Nombre <span class="req">*</span></label>
+        <input id="in-nombre" type="text" maxlength="100" autocomplete="off" aria-describedby="h-nombre err-nombre">
+        <p class="hint" id="h-nombre">Entre 5 y 100 caracteres. Admite letras con acentos, dígitos, espacios y signos . , - ( ).</p>
+        <p class="err" id="err-nombre" role="alert" hidden></p>
+      </div>
+
+      <div>
+        <label for="in-creditos">Créditos <span class="req">*</span></label>
+        <input id="in-creditos" type="text" inputmode="numeric" autocomplete="off" aria-describedby="h-creditos err-creditos">
+        <p class="hint" id="h-creditos">Número entero entre 1 y 10.</p>
+        <p class="err" id="err-creditos" role="alert" hidden></p>
+      </div>
+
+      <div>
+        <label for="in-semestre">Semestre <span class="req">*</span></label>
+        <input id="in-semestre" type="text" inputmode="numeric" autocomplete="off" aria-describedby="h-semestre err-semestre">
+        <p class="hint" id="h-semestre">Número entero entre 1 y 9.</p>
+        <p class="err" id="err-semestre" role="alert" hidden></p>
+      </div>
+    </div>
+
+    <fieldset>
+      <legend>Prerrequisitos (opcional)</legend>
+      <div id="contenedor-prerrequisitos"></div>
+      <p class="hint" id="hint-sin-pre">Sin prerrequisitos asignados. Cada prerrequisito debe estar activo y en un semestre menor.</p>
+      <p class="err" id="err-prerrequisitos" role="alert" hidden></p>
+      <button type="button" class="sec" id="btn-agregar-pre" style="margin-top:6px;">+ Agregar prerrequisito</button>
+    </fieldset>
+
+    <div class="aviso aviso-warn" id="aviso-confirmacion-edicion" hidden></div>
+
+    <div class="acciones-dlg">
+      <button type="button" class="sec" id="btn-cancelar-form">Cancelar</button>
+      <button type="submit" class="btn" id="btn-guardar-form">Guardar materia</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- DIÁLOGO DE CONFIRMACIÓN DE ELIMINACIÓN / BAJA LÓGICA -->
+<dialog id="dlg-eliminar" aria-labelledby="dlg-del-titulo">
+  <h2 id="dlg-del-titulo">Eliminar materia del catálogo</h2>
+  <div class="resumen-materia" id="dlg-del-resumen"></div>
+  <div id="dlg-del-cuerpo"></div>
+  <div class="acciones-dlg" id="dlg-del-acciones"></div>
+</dialog>
+
+<!-- DIÁLOGO DE BITÁCORA DE AUDITORÍA -->
+<dialog id="dlg-bitacora" aria-labelledby="dlg-bit-titulo">
+  <h2 id="dlg-bit-titulo">Bitácora de auditoría del catálogo</h2>
+  <p class="sub">Registro inmutable de altas, ediciones, bajas lógicas, eliminaciones e intentos rechazados por permisos.</p>
+  <div class="tabla-w" style="margin-top:12px; max-height:340px; overflow-y:auto;">
+    <table style="min-width:520px;">
+      <thead>
+        <tr>
+          <th>Fecha / Hora</th>
+          <th>Usuario (Rol)</th>
+          <th>Acción</th>
+          <th>Detalle de cambio (Anterior → Nuevo)</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-bitacora"></tbody>
+    </table>
+  </div>
+  <div class="acciones-dlg">
+    <button type="button" class="sec" id="btn-cerrar-bitacora">Cerrar</button>
+  </div>
+</dialog>
+
+<script>
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const $ = id => document.getElementById(id);
+
+let rolActual = "Administrador";
+let usuarioActual = "Roberto Salinas Vega";
+
+// Catálogo inicial con casos representativos del análisis:
+// - Con dependientes e historial (AED1285, ACF2301, AED1286)
+// - Con historial pero sin dependientes (SCB1001, SCC1019) -> Baja lógica
+// - Sin historial y sin dependientes (SCD1027) -> Eliminación física permitida
+// - Inactiva con historial (SCC1013) -> Clave reservada no reutilizable / Reactivable
+const CATALOGO = [
+  { id: 1, clave: "AED1285", nombre: "Fundamentos de Programación", creditos: 5, semestre: 1, prerrequisitos: [], estatus: "Activa", alumnosConHistorial: 142 },
+  { id: 2, clave: "ACF2301", nombre: "Cálculo Diferencial", creditos: 5, semestre: 1, prerrequisitos: [], estatus: "Activa", alumnosConHistorial: 140 },
+  { id: 3, clave: "AED1286", nombre: "Programación Orientada a Objetos", creditos: 5, semestre: 2, prerrequisitos: ["AED1285"], estatus: "Activa", alumnosConHistorial: 118 },
+  { id: 4, clave: "ACF0902", nombre: "Cálculo Integral", creditos: 5, semestre: 2, prerrequisitos: ["ACF2301"], estatus: "Activa", alumnosConHistorial: 115 },
+  { id: 5, clave: "AED1026", nombre: "Estructura de Datos", creditos: 5, semestre: 3, prerrequisitos: ["AED1286"], estatus: "Activa", alumnosConHistorial: 96 },
+  { id: 6, clave: "ACF0904", nombre: "Cálculo Vectorial", creditos: 5, semestre: 3, prerrequisitos: ["ACF0902"], estatus: "Activa", alumnosConHistorial: 91 },
+  { id: 7, clave: "AEF1031", nombre: "Fundamentos de Base de Datos", creditos: 5, semestre: 4, prerrequisitos: ["AED1026"], estatus: "Activa", alumnosConHistorial: 74 },
+  { id: 8, clave: "SCA1025", nombre: "Taller de Base de Datos", creditos: 4, semestre: 5, prerrequisitos: ["AEF1031"], estatus: "Activa", alumnosConHistorial: 62 },
+  { id: 9, clave: "SCB1001", nombre: "Administración de Base de Datos", creditos: 5, semestre: 6, prerrequisitos: ["SCA1025"], estatus: "Activa", alumnosConHistorial: 48 },
+  { id: 10, clave: "SCC1019", nombre: "Programación Lógica y Funcional", creditos: 4, semestre: 6, prerrequisitos: ["AED1026"], estatus: "Activa", alumnosConHistorial: 39 },
+  { id: 11, clave: "SCD1018", nombre: "Principios Eléctricos y Aplicaciones Digitales", creditos: 5, semestre: 4, prerrequisitos: ["ACF0904"], estatus: "Activa", alumnosConHistorial: 65 },
+  { id: 12, clave: "SCD1027", nombre: "Tópicos Avanzados de Software", creditos: 5, semestre: 8, prerrequisitos: ["SCB1001"], estatus: "Activa", alumnosConHistorial: 0 },
+  { id: 13, clave: "SCC1013", nombre: "Graficación por Computadora", creditos: 4, semestre: 5, prerrequisitos: ["AED1026"], estatus: "Inactiva", alumnosConHistorial: 27 }
+];
+
+const BITACORA = [
+  { fecha: "2026-10-28 08:30", usuario: "Roberto Salinas Vega (Administrador)", accion: "Baja lógica", detalle: "SCC1013: Estatus Activa → Inactiva (con 27 registros en historial)" },
+  { fecha: "2026-10-28 09:10", usuario: "Roberto Salinas Vega (Administrador)", accion: "Alta", detalle: "SCD1027: Tópicos Avanzados de Software (Sem. 8, 5 cr.)" }
+];
+
+let modoFormulario = "alta";
+let materiaEditando = null;
+let confirmacionPendiente = false;
+
+const buscarPorClave = c => CATALOGO.find(m => m.clave.toUpperCase() === String(c).toUpperCase());
+const dependientesDe = clave => CATALOGO.filter(m => m.prerrequisitos.includes(clave));
+
+function normalizarEspacios(txt) {
+  return String(txt || "").trim().replace(/\s+/g, " ");
+}
+
+function registrarBitacora(accion, detalle) {
+  const ahora = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  const fecha = ahora.getFullYear() + "-" + pad(ahora.getMonth() + 1) + "-" + pad(ahora.getDate()) + " " + pad(ahora.getHours()) + ":" + pad(ahora.getMinutes());
+  BITACORA.unshift({
+    fecha,
+    usuario: usuarioActual + " (" + rolActual + ")",
+    accion,
+    detalle
+  });
+  actualizarResumen();
+}
+
+function mostrarBanner(mensaje, esError = false) {
+  const b = $("banner");
+  b.textContent = mensaje;
+  b.className = esError ? "banner error" : "banner";
+  b.hidden = false;
+  b.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function verificarPermisoEscritura(accionIntentada) {
+  if (rolActual !== "Administrador") {
+    registrarBitacora("Acceso denegado (403)", "Intento de " + accionIntentada + " rechazado por rol sin privilegios.");
+    mostrarBanner("HTTP 403: No cuentas con permisos para modificar el catálogo académico.", true);
+    return false;
+  }
+  return true;
+}
+
+function actualizarResumen() {
+  const activas = CATALOGO.filter(m => m.estatus === "Activa");
+  const inactivas = CATALOGO.filter(m => m.estatus === "Inactiva");
+  const creditos = activas.reduce((acc, m) => acc + m.creditos, 0);
+  $("st-activas").textContent = activas.length;
+  $("st-inactivas").textContent = inactivas.length;
+  $("st-creditos").textContent = creditos;
+  $("cont-bitacora").textContent = BITACORA.length;
+}
+
+function renderizarTabla() {
+  actualizarResumen();
+  const q = normalizarEspacios($("f-buscar").value).toLowerCase();
+  const sem = $("f-semestre").value;
+  const est = $("f-estatus").value;
+
+  const filtradas = CATALOGO.filter(m => {
+    if (q && !(m.clave + " " + m.nombre).toLowerCase().includes(q)) return false;
+    if (sem && String(m.semestre) !== sem) return false;
+    if (est && m.estatus !== est) return false;
+    return true;
+  });
+
+  if (!filtradas.length) {
+    $("tabla-cuerpo").innerHTML = '<tr><td colspan="7" class="sub">Ninguna materia coincide con los criterios de búsqueda.</td></tr>';
+    return;
+  }
+
+  $("tabla-cuerpo").innerHTML = filtradas.map(m => {
+    const deps = dependientesDe(m.clave);
+    const chipsPre = m.prerrequisitos.length
+      ? m.prerrequisitos.map(c => {
+          const pm = buscarPorClave(c);
+          return '<span class="chip" title="' + esc(c) + '">' + esc(c) + (pm ? " · " + esc(pm.nombre) : "") + '</span>';
+        }).join("")
+      : '<span class="sub">Sin prerrequisitos</span>';
+
+    const infoUso = [];
+    if (m.alumnosConHistorial > 0) infoUso.push(m.alumnosConHistorial + " alumnos con historial");
+    else infoUso.push("Sin historial académico");
+    if (deps.length > 0) infoUso.push("Prerrequisito de " + deps.map(d => d.clave).join(", "));
+
+    const claseEstado = m.estatus === "Activa" ? "estado estado-activa" : "estado estado-inactiva";
+    const botonSecundario = m.estatus === "Activa"
+      ? '<button type="button" class="sec-danger" data-accion="eliminar" data-clave="' + esc(m.clave) + '">Eliminar</button>'
+      : '<button type="button" class="sec" data-accion="reactivar" data-clave="' + esc(m.clave) + '">Reactivar</button>';
+
+    return '<tr class="' + (m.estatus === "Inactiva" ? "fila-inactiva" : "") + '">' +
+      '<td><strong>' + esc(m.clave) + '</strong></td>' +
+      '<td>' + esc(m.nombre) + '<span class="meta-uso">' + esc(infoUso.join(" · ")) + '</span></td>' +
+      '<td class="num">' + m.semestre + '</td>' +
+      '<td class="num">' + m.creditos + '</td>' +
+      '<td>' + chipsPre + '</td>' +
+      '<td><span class="' + claseEstado + '">' + esc(m.estatus) + '</span></td>' +
+      '<td class="num"><div class="acciones-celda">' +
+        '<button type="button" class="sec" data-accion="editar" data-clave="' + esc(m.clave) + '">Editar</button>' +
+        botonSecundario +
+      '</div></td>' +
+    '</tr>';
+  }).join("");
+}
+
+$("f-buscar").addEventListener("input", renderizarTabla);
+$("f-semestre").addEventListener("change", renderizarTabla);
+$("f-estatus").addEventListener("change", renderizarTabla);
+
+// ---------- GESTIÓN DE PRERREQUISITOS EN EL FORMULARIO ----------
+function obtenerPrerrequisitosSeleccionados() {
+  return [...$("contenedor-prerrequisitos").querySelectorAll("select")].map(s => s.value);
+}
+
+function opcionesPrerrequisito(seleccionada, claveActual) {
+  const candidatas = CATALOGO.filter(m => m.estatus === "Activa" && m.clave !== claveActual);
+  return '<option value="">Selecciona una materia activa</option>' + candidatas.map(m =>
+    '<option value="' + esc(m.clave) + '"' + (m.clave === seleccionada ? " selected" : "") + '>' +
+      esc(m.clave) + " — " + esc(m.nombre) + " (Sem. " + m.semestre + ")" +
+    '</option>'
+  ).join("");
+}
+
+function pintarFilasPrerrequisitos(valores) {
+  const claveActual = normalizarEspacios($("in-clave").value).toUpperCase();
+  $("contenedor-prerrequisitos").innerHTML = valores.map((val, idx) =>
+    '<div class="fila-pre">' +
+      '<div class="fila-pre-in">' +
+        '<select aria-label="Prerrequisito ' + (idx + 1) + '">' + opcionesPrerrequisito(val, claveActual) + '</select>' +
+        '<button type="button" class="sec" data-quitar="' + idx + '">Quitar</button>' +
+      '</div>' +
+    '</div>'
+  ).join("");
+  $("hint-sin-pre").hidden = valores.length > 0;
+}
+
+$("btn-agregar-pre").addEventListener("click", () => {
+  const actuales = obtenerPrerrequisitosSeleccionados();
+  pintarFilasPrerrequisitos(actuales.concat(""));
+  const selects = $("contenedor-prerrequisitos").querySelectorAll("select");
+  if (selects.length) selects[selects.length - 1].focus();
+});
+
+$("contenedor-prerrequisitos").addEventListener("click", e => {
+  const b = e.target.closest("button[data-quitar]");
+  if (!b) return;
+  const idx = Number(b.dataset.quitar);
+  const actuales = obtenerPrerrequisitosSeleccionados();
+  pintarFilasPrerrequisitos(actuales.filter((_, i) => i !== idx));
+});
+
+// ---------- VALIDACIONES SEGÚN SECCIÓN 3 Y 4 DEL ANÁLISIS ----------
+function marcarError(inputEl, errEl, mensaje) {
+  errEl.textContent = mensaje;
+  errEl.hidden = !mensaje;
+  if (inputEl) inputEl.setAttribute("aria-invalid", mensaje ? "true" : "false");
+}
+
+function limpiarErroresFormulario() {
+  marcarError($("in-clave"), $("err-clave"), "");
+  marcarError($("in-nombre"), $("err-nombre"), "");
+  marcarError($("in-creditos"), $("err-creditos"), "");
+  marcarError($("in-semestre"), $("err-semestre"), "");
+  $("err-prerrequisitos").textContent = "";
+  $("err-prerrequisitos").hidden = true;
+  $("aviso-confirmacion-edicion").hidden = true;
+}
+
+function hayCicloPrerrequisitos(claveOrigen, nuevosPrerrequisitos) {
+  const obtenerVecinos = c => (c === claveOrigen ? nuevosPrerrequisitos : (buscarPorClave(c)?.prerrequisitos || []));
+  const visitar = (actual, visitados) => {
+    if (actual === claveOrigen && visitados.length > 0) return true;
+    if (visitados.includes(actual)) return false;
+    for (const sig of obtenerVecinos(actual)) {
+      if (visitar(sig, visitados.concat(actual))) return true;
+    }
+    return false;
+  };
+  return visitar(claveOrigen, []);
+}
+
+function validarFormulario() {
+  let primerInvalido = null;
+  const registrarFallo = (el, errEl, msg) => {
+    marcarError(el, errEl, msg);
+    if (!primerInvalido && el) primerInvalido = el;
+  };
+
+  // 1. Clave
+  const claveRaw = normalizarEspacios($("in-clave").value).toUpperCase();
+  $("in-clave").value = claveRaw;
+  if (modoFormulario === "alta") {
+    if (!claveRaw) {
+      registrarFallo($("in-clave"), $("err-clave"), "El campo Clave es obligatorio.");
+    } else if (!/^[A-Z0-9]{5,10}$/.test(claveRaw)) {
+      registrarFallo($("in-clave"), $("err-clave"), "La clave debe tener de 5 a 10 caracteres entre letras mayúsculas y números, sin espacios.");
+    } else if (buscarPorClave(claveRaw)) {
+      registrarFallo($("in-clave"), $("err-clave"), "Ya existe una materia con la clave " + claveRaw + ".");
+    } else {
+      marcarError($("in-clave"), $("err-clave"), "");
+    }
+  } else {
+    marcarError($("in-clave"), $("err-clave"), "");
+  }
+
+  // 2. Nombre
+  const nombreNorm = normalizarEspacios($("in-nombre").value);
+  $("in-nombre").value = nombreNorm;
+  const regexNombre = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 .,()\-]{5,100}$/;
+  const soloNumerosOSimbolos = /^[0-9 .,()\-]+$/.test(nombreNorm);
+  if (!nombreNorm) {
+    registrarFallo($("in-nombre"), $("err-nombre"), "El campo Nombre es obligatorio.");
+  } else if (nombreNorm.length < 5 || nombreNorm.length > 100 || !regexNombre.test(nombreNorm) || soloNumerosOSimbolos) {
+    registrarFallo($("in-nombre"), $("err-nombre"), "El nombre debe tener entre 5 y 100 caracteres válidos y no puede contener solo números.");
+  } else {
+    marcarError($("in-nombre"), $("err-nombre"), "");
+  }
+
+  // 3. Créditos
+  const crTxt = normalizarEspacios($("in-creditos").value);
+  const crNum = Number(crTxt);
+  let crValido = false;
+  if (!crTxt) {
+    registrarFallo($("in-creditos"), $("err-creditos"), "El campo Créditos es obligatorio.");
+  } else if (!/^-?\d+$/.test(crTxt) || crNum < 1 || crNum > 10) {
+    registrarFallo($("in-creditos"), $("err-creditos"), "Los créditos deben ser un número entero entre 1 y 10.");
+  } else {
+    marcarError($("in-creditos"), $("err-creditos"), "");
+    crValido = true;
+  }
+
+  // 4. Semestre
+  const semTxt = normalizarEspacios($("in-semestre").value);
+  const semNum = Number(semTxt);
+  let semValido = false;
+  if (!semTxt) {
+    registrarFallo($("in-semestre"), $("err-semestre"), "El campo Semestre es obligatorio.");
+  } else if (!/^-?\d+$/.test(semTxt) || semNum < 1 || semNum > 9) {
+    registrarFallo($("in-semestre"), $("err-semestre"), "El semestre debe ser un número entero entre 1 y 9.");
+  } else {
+    marcarError($("in-semestre"), $("err-semestre"), "");
+    semValido = true;
+  }
+
+  // 5. Prerrequisitos
+  const preSeleccionados = obtenerPrerrequisitosSeleccionados();
+  let errorPre = "";
+  const vistos = new Set();
+
+  for (const cod of preSeleccionados) {
+    if (!cod) {
+      errorPre = "El prerrequisito seleccionado genera una dependencia circular o no es válido.";
+      break;
+    }
+    const matPre = buscarPorClave(cod);
+    if (!matPre || matPre.estatus !== "Activa" || cod === claveRaw || vistos.has(cod)) {
+      errorPre = "El prerrequisito seleccionado genera una dependencia circular o no es válido.";
+      break;
+    }
+    if (semValido && matPre.semestre >= semNum) {
+      errorPre = "El prerrequisito seleccionado genera una dependencia circular o no es válido (debe pertenecer a un semestre menor al semestre " + semNum + ").";
+      break;
+    }
+    vistos.add(cod);
+  }
+
+  // Si estamos editando y se redujo el semestre, verificar que las materias que dependen de esta sigan en semestres mayores
+  if (!errorPre && modoFormulario === "edicion" && semValido) {
+    const dependientes = dependientesDe(claveRaw);
+    const depInvalida = dependientes.find(d => d.semestre <= semNum);
+    if (depInvalida) {
+      errorPre = "El prerrequisito seleccionado genera una dependencia circular o no es válido (la materia dependiente " + depInvalida.clave + " está en semestre " + depInvalida.semestre + ").";
+    }
+  }
+
+  if (!errorPre && claveRaw && preSeleccionados.length > 0) {
+    if (hayCicloPrerrequisitos(claveRaw, preSeleccionados)) {
+      errorPre = "El prerrequisito seleccionado genera una dependencia circular o no es válido.";
+    }
+  }
+
+  $("err-prerrequisitos").textContent = errorPre;
+  $("err-prerrequisitos").hidden = !errorPre;
+  if (errorPre && !primerInvalido) {
+    const primerSelect = $("contenedor-prerrequisitos").querySelector("select");
+    if (primerSelect) primerInvalido = primerSelect;
+  }
+
+  return {
+    esValido: !primerInvalido && !errorPre,
+    primerInvalido,
+    datos: {
+      clave: claveRaw,
+      nombre: nombreNorm,
+      creditos: crValido ? crNum : null,
+      semestre: semValido ? semNum : null,
+      prerrequisitos: preSeleccionados
+    }
+  };
+}
+
+// ---------- APERTURA DE MODAL ALTA Y EDICIÓN ----------
+function abrirModalAlta() {
+  if (!verificarPermisoEscritura("alta de materia")) return;
+  modoFormulario = "alta";
+  materiaEditando = null;
+  confirmacionPendiente = false;
+  limpiarErroresFormulario();
+
+  $("dlg-form-titulo").textContent = "Dar de alta materia";
+  $("in-clave").value = "";
+  $("in-clave").readOnly = false;
+  $("in-estatus").value = "Activa";
+  $("in-nombre").value = "";
+  $("in-creditos").value = "";
+  $("in-semestre").value = "";
+  pintarFilasPrerrequisitos([]);
+  $("btn-guardar-form").textContent = "Guardar materia";
+
+  $("dlg-form").showModal();
+  $("in-clave").focus();
+}
+
+function abrirModalEdicion(clave) {
+  if (!verificarPermisoEscritura("edición de materia " + clave)) return;
+  const mat = buscarPorClave(clave);
+  if (!mat) return;
+
+  modoFormulario = "edicion";
+  materiaEditando = mat;
+  confirmacionPendiente = false;
+  limpiarErroresFormulario();
+
+  $("dlg-form-titulo").textContent = "Editar materia " + mat.clave;
+  $("in-clave").value = mat.clave;
+  $("in-clave").readOnly = true;
+  $("in-estatus").value = mat.estatus;
+  $("in-nombre").value = mat.nombre;
+  $("in-creditos").value = mat.creditos;
+  $("in-semestre").value = mat.semestre;
+  pintarFilasPrerrequisitos(mat.prerrequisitos.slice());
+  $("btn-guardar-form").textContent = "Guardar cambios";
+
+  $("dlg-form").showModal();
+  $("in-nombre").focus();
+}
+
+$("btn-nueva").addEventListener("click", abrirModalAlta);
+$("btn-cancelar-form").addEventListener("click", () => $("dlg-form").close());
+
+$("form-materia").addEventListener("submit", e => {
+  e.preventDefault();
+  const res = validarFormulario();
+  if (!res.esValido) {
+    if (res.primerInvalido) res.primerInvalido.focus();
+    return;
+  }
+
+  const d = res.datos;
+  const avisosConfirmacion = [];
+
+  // Regla sección 4: Coincidencia de nombre y semestre con otra materia distinta
+  const homonima = CATALOGO.find(m =>
+    m.clave !== d.clave &&
+    m.nombre.toLowerCase() === d.nombre.toLowerCase() &&
+    m.semestre === d.semestre
+  );
+  if (homonima) {
+    avisosConfirmacion.push("Ya existe la materia «" + homonima.nombre + "» (" + homonima.clave + ") en el semestre " + d.semestre + ".");
+  }
+
+  // Regla sección 5.2: Confirmación al editar créditos o semestre
+  if (modoFormulario === "edicion") {
+    if (d.creditos !== materiaEditando.creditos) {
+      avisosConfirmacion.push("Cambiar los créditos (" + materiaEditando.creditos + " → " + d.creditos + ") recalculará proyecciones y recomendaciones futuras; el historial ya cursado conservará sus créditos originales.");
+    }
+    if (d.semestre !== materiaEditando.semestre) {
+      avisosConfirmacion.push("Cambiar el semestre (" + materiaEditando.semestre + " → " + d.semestre + ") reubicará la materia en la retícula oficial y recalculará la proyección de egreso.");
+    }
+  }
+
+  if (avisosConfirmacion.length > 0 && !confirmacionPendiente) {
+    confirmacionPendiente = true;
+    const box = $("aviso-confirmacion-edicion");
+    box.innerHTML = "<strong>Confirmación requerida antes de guardar:</strong><br>" + avisosConfirmacion.map(a => "• " + esc(a)).join("<br>") + "<br>Pulsa nuevamente el botón de guardar para confirmar.";
+    box.hidden = false;
+    $("btn-guardar-form").textContent = "Confirmar y guardar";
+    return;
+  }
+
+  if (modoFormulario === "alta") {
+    CATALOGO.push({
+      id: CATALOGO.length + 1,
+      clave: d.clave,
+      nombre: d.nombre,
+      creditos: d.creditos,
+      semestre: d.semestre,
+      prerrequisitos: d.prerrequisitos,
+      estatus: "Activa",
+      alumnosConHistorial: 0
+    });
+    registrarBitacora("Alta", d.clave + ": " + d.nombre + " (Sem. " + d.semestre + ", " + d.creditos + " cr.)");
+    $("dlg-form").close();
+    renderizarTabla();
+    mostrarBanner("Materia " + d.clave + " («" + d.nombre + "») dada de alta en el semestre " + d.semestre + ". Se recalculó el total de créditos y las recomendaciones del plan.");
+  } else {
+    const cambios = [];
+    if (materiaEditando.nombre !== d.nombre) cambios.push("Nombre: «" + materiaEditando.nombre + "» → «" + d.nombre + "»");
+    if (materiaEditando.creditos !== d.creditos) cambios.push("Créditos: " + materiaEditando.creditos + " → " + d.creditos);
+    if (materiaEditando.semestre !== d.semestre) cambios.push("Semestre: " + materiaEditando.semestre + " → " + d.semestre);
+    if (JSON.stringify(materiaEditando.prerrequisitos) !== JSON.stringify(d.prerrequisitos)) {
+      cambios.push("Prerrequisitos: [" + (materiaEditando.prerrequisitos.join(", ") || "ninguno") + "] → [" + (d.prerrequisitos.join(", ") || "ninguno") + "]");
+    }
+
+    $("dlg-form").close();
+    if (!cambios.length) {
+      mostrarBanner("No hubo cambios por guardar en la materia " + d.clave + ".");
+      return;
+    }
+
+    materiaEditando.nombre = d.nombre;
+    materiaEditando.creditos = d.creditos;
+    materiaEditando.semestre = d.semestre;
+    materiaEditando.prerrequisitos = d.prerrequisitos;
+
+    registrarBitacora("Edición (" + d.clave + ")", cambios.join(" | "));
+    renderizarTabla();
+    mostrarBanner("Cambios guardados en «" + d.nombre + "» (" + d.clave + "). El ajuste quedó registrado en la bitácora.");
+  }
+});
+
+// ---------- DIÁLOGO DE ELIMINACIÓN Y BAJA LÓGICA (SECCIÓN 5.3) ----------
+function abrirDialogoEliminar(clave) {
+  if (!verificarPermisoEscritura("eliminación/baja de materia " + clave)) return;
+  const mat = buscarPorClave(clave);
+  if (!mat) return;
+
+  const deps = dependientesDe(mat.clave);
+  $("dlg-del-resumen").innerHTML =
+    "<strong>" + esc(mat.clave) + " — " + esc(mat.nombre) + "</strong><br>" +
+    "Semestre " + mat.semestre + " · " + mat.creditos + " créditos · Estatus actual: " + esc(mat.estatus);
+
+  const cuerpo = $("dlg-del-cuerpo");
+  const acciones = $("dlg-del-acciones");
+
+  // Caso 1: Tiene materias que la usan como prerrequisito -> Bloqueado
+  if (deps.length > 0) {
+    const listaMaterias = deps.map(d => d.clave + " (" + d.nombre + ")").join(", ");
+    $("dlg-del-titulo").textContent = "Eliminación bloqueada por prerrequisitos";
+    cuerpo.innerHTML =
+      '<div class="aviso aviso-err" role="alert">' +
+        '<strong>No se puede eliminar: es prerrequisito de ' + esc(listaMaterias) + '.</strong>' +
+      '</div>' +
+      '<p class="hint" style="margin-top:10px;">Debes retirar o reasignar primero esas dependencias antes de poder eliminar o dar de baja esta materia.</p>';
+    acciones.innerHTML = '<button type="button" class="btn" id="btn-del-cerrar">Entendido</button>';
+  }
+  // Caso 2: Tiene historial académico de uno o más alumnos -> Baja lógica
+  else if (mat.alumnosConHistorial > 0) {
+    $("dlg-del-titulo").textContent = "Baja lógica de materia con historial";
+    cuerpo.innerHTML =
+      '<div class="aviso aviso-warn" role="alert">' +
+        '<strong>La materia tiene historial académico; solo puede darse de baja.</strong>' +
+      '</div>' +
+      '<p style="margin:12px 0 0; font-size:0.875rem;">' +
+        'Existen <strong>' + mat.alumnosConHistorial + ' expedientes de alumnos</strong> vinculados a esta asignatura. ' +
+        'Al confirmar la baja lógica, la materia pasará a estatus <strong>Inactiva</strong>: dejará de mostrarse en la retícula vigente y en nuevas recomendaciones, pero se conservará en el historial de quienes ya la cursaron.' +
+      '</p>';
+    acciones.innerHTML =
+      '<button type="button" class="sec" id="btn-del-cerrar">Cancelar</button>' +
+      '<button type="button" class="btn-warn" id="btn-confirmar-baja">Confirmar baja lógica</button>';
+  }
+  // Caso 3: Sin historial y sin dependientes -> Eliminación física permitida con confirmación explícita
+  else {
+    $("dlg-del-titulo").textContent = "Confirmar eliminación física de materia";
+    cuerpo.innerHTML =
+      '<p style="margin:10px 0; font-size:0.9rem;">' +
+        'Esta materia no tiene historial académico registrado ni es prerrequisito de ninguna otra asignatura. ' +
+        '¿Confirmas que deseas eliminarla físicamente del catálogo? Desaparecerá de forma permanente de la retícula oficial.' +
+      '</p>';
+    acciones.innerHTML =
+      '<button type="button" class="sec" id="btn-del-cerrar">Cancelar</button>' +
+      '<button type="button" class="btn-danger" id="btn-confirmar-fisica">Eliminar definitivamente</button>';
+  }
+
+  $("dlg-eliminar").showModal();
+
+  $("btn-del-cerrar").addEventListener("click", () => $("dlg-eliminar").close());
+
+  const btnBaja = $("btn-confirmar-baja");
+  if (btnBaja) {
+    btnBaja.addEventListener("click", () => {
+      mat.estatus = "Inactiva";
+      registrarBitacora("Baja lógica", mat.clave + ": Estatus Activa → Inactiva (historial preservado)");
+      $("dlg-eliminar").close();
+      renderizarTabla();
+      mostrarBanner("Materia dada de baja. El historial no se modificó.");
+    });
+  }
+
+  const btnFisica = $("btn-confirmar-fisica");
+  if (btnFisica) {
+    btnFisica.addEventListener("click", () => {
+      const idx = CATALOGO.findIndex(x => x.clave === mat.clave);
+      if (idx !== -1) CATALOGO.splice(idx, 1);
+      registrarBitacora("Eliminación física", mat.clave + ": «" + mat.nombre + "» eliminada del catálogo");
+      $("dlg-eliminar").close();
+      renderizarTabla();
+      mostrarBanner("Materia eliminada correctamente.");
+    });
+  }
+}
+
+function reactivarMateria(clave) {
+  if (!verificarPermisoEscritura("reactivación de materia " + clave)) return;
+  const mat = buscarPorClave(clave);
+  if (!mat) return;
+
+  const preInactivo = mat.prerrequisitos.map(buscarPorClave).find(p => !p || p.estatus !== "Activa");
+  if (preInactivo) {
+    mostrarBanner("No se puede reactivar " + mat.clave + ": su prerrequisito " + preInactivo.clave + " se encuentra inactivo.", true);
+    return;
+  }
+
+  mat.estatus = "Activa";
+  registrarBitacora("Reactivación", mat.clave + ": Estatus Inactiva → Activa");
+  renderizarTabla();
+  mostrarBanner("Materia " + mat.clave + " («" + mat.nombre + "») reactivada exitosamente en la retícula.");
+}
+
+$("tabla-cuerpo").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-accion]");
+  if (!btn) return;
+  const accion = btn.dataset.accion;
+  const clave = btn.dataset.clave;
+  if (accion === "editar") abrirModalEdicion(clave);
+  else if (accion === "eliminar") abrirDialogoEliminar(clave);
+  else if (accion === "reactivar") reactivarMateria(clave);
+});
+
+// ---------- BITÁCORA ----------
+function abrirBitacora() {
+  if (rolActual !== "Administrador") {
+    mostrarBanner("HTTP 403: No cuentas con permisos para consultar la bitácora del catálogo académico.", true);
+    return;
+  }
+  $("tabla-bitacora").innerHTML = BITACORA.map(b =>
+    '<tr>' +
+      '<td>' + esc(b.fecha) + '</td>' +
+      '<td>' + esc(b.usuario) + '</td>' +
+      '<td><strong>' + esc(b.accion) + '</strong></td>' +
+      '<td>' + esc(b.detalle) + '</td>' +
+    '</tr>'
+  ).join("");
+  $("dlg-bitacora").showModal();
+}
+
+$("btn-bitacora").addEventListener("click", abrirBitacora);
+$("menu-bitacora").addEventListener("click", e => { e.preventDefault(); cerrarMenu(); abrirBitacora(); });
+$("btn-cerrar-bitacora").addEventListener("click", () => $("dlg-bitacora").close());
+
+// ---------- ESCENARIOS DE PRUEBA RÁPIDA (SQA) ----------
+$("sc-alta-vacia").addEventListener("click", () => {
+  rolActual = "Administrador";
+  actualizarUIUsuario();
+  abrirModalAlta();
+  $("form-materia").requestSubmit();
+});
+
+$("sc-alta-invalida").addEventListener("click", () => {
+  rolActual = "Administrador";
+  actualizarUIUsuario();
+  abrirModalAlta();
+  $("in-clave").value = "AB-1";
+  $("in-nombre").value = "12345";
+  $("in-creditos").value = "15";
+  $("in-semestre").value = "12";
+  $("form-materia").requestSubmit();
+});
+
+$("sc-clave-dup").addEventListener("click", () => {
+  rolActual = "Administrador";
+  actualizarUIUsuario();
+  abrirModalAlta();
+  $("in-clave").value = "AED1285";
+  $("in-nombre").value = "Fundamentos de Programación Duplicada";
+  $("in-creditos").value = "5";
+  $("in-semestre").value = "1";
+  $("form-materia").requestSubmit();
+});
+
+$("sc-del-bloqueada").addEventListener("click", () => {
+  rolActual = "Administrador";
+  actualizarUIUsuario();
+  abrirDialogoEliminar("AED1285");
+});
+
+$("sc-del-historial").addEventListener("click", () => {
+  rolActual = "Administrador";
+  actualizarUIUsuario();
+  abrirDialogoEliminar("SCB1001");
+});
+
+$("sc-del-fisica").addEventListener("click", () => {
+  rolActual = "Administrador";
+  actualizarUIUsuario();
+  if (!buscarPorClave("SCD1027")) {
+    CATALOGO.push({ id: 99, clave: "SCD1027", nombre: "Tópicos Avanzados de Software", creditos: 5, semestre: 8, prerrequisitos: ["SCB1001"], estatus: "Activa", alumnosConHistorial: 0 });
+    renderizarTabla();
+  }
+  abrirDialogoEliminar("SCD1027");
+});
+
+function actualizarUIUsuario() {
+  $("rol-usuario").textContent = rolActual;
+  $("lbl-rol-demo").textContent = rolActual;
+  $("nombre-usuario").textContent = rolActual === "Administrador" ? "Roberto Salinas Vega" : "Ana Sofía Ramírez Torres";
+}
+
+$("sc-rol").addEventListener("click", () => {
+  rolActual = rolActual === "Administrador" ? "Alumno (Lectura)" : "Administrador";
+  actualizarUIUsuario();
+  mostrarBanner("Rol activo cambiado a: " + rolActual + ". " + (rolActual !== "Administrador" ? "Cualquier intento de escritura devolverá HTTP 403." : "Permisos completos habilitados."));
+});
+
+// ---------- MENÚ SUPERIOR ----------
+const btnMenu = $("btn-menu"), menu = $("menu");
+const cerrarMenu = () => {
+  menu.hidden = true;
+  btnMenu.setAttribute("aria-expanded", "false");
+  btnMenu.setAttribute("aria-label", "Abrir menú");
+};
+btnMenu.addEventListener("click", () => {
+  const abrirM = menu.hidden;
+  menu.hidden = !abrirM;
+  btnMenu.setAttribute("aria-expanded", String(abrirM));
+  btnMenu.setAttribute("aria-label", abrirM ? "Cerrar menú" : "Abrir menú");
+});
+document.addEventListener("click", e => { if (!menu.hidden && !e.target.closest(".usuario")) cerrarMenu(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !menu.hidden) { cerrarMenu(); btnMenu.focus(); } });
+
+// ---------- INICIO ----------
+renderizarTabla();
+</script>
+</body>
+</html>

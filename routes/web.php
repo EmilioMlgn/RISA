@@ -20,3 +20,7 @@ Route::get('/configuracion-reglas', function () {
 Route::get('/simulador-escenarios', function () {
     return response()->file(base_path('MockupRecomendacion_v1_2026-10-14.html'));
 })->name('recomendacion.simulador');
+
+Route::get('/catalogo-materias', function () {
+    return response()->file(base_path('MockupCatalogoMaterias_v1_2026-10-28.html'));
+})->name('catalogo.materias');
