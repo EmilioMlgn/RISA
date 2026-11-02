@@ -77,7 +77,8 @@ class CurriculumService
         $plan = StudyPlan::where('is_active', true)->first()
             ?? StudyPlan::first();
 
-        $subjects = Subject::where('study_plan_id', $plan?->id ?? 1)
+        $subjects = Subject::active()
+            ->where('study_plan_id', $plan?->id ?? 1)
             ->with(['prerequisites', 'comments'])
             ->orderBy('semester_order')
             ->orderBy('id')
@@ -207,7 +208,8 @@ class CurriculumService
     {
         $plan = StudyPlan::where('is_active', true)->first() ?? StudyPlan::first();
 
-        $subjects = Subject::where('study_plan_id', $plan?->id ?? 1)
+        $subjects = Subject::active()
+            ->where('study_plan_id', $plan?->id ?? 1)
             ->orderBy('semester_order')
             ->get();
 

@@ -166,6 +166,17 @@ class RisaCurriculumSeeder extends Seeder
             ]
         );
 
+        User::updateOrCreate(
+            ['email' => 'roberto.salinas@itcelaya.edu.mx'],
+            [
+                'name' => 'Roberto Salinas Vega',
+                'role' => 'admin',
+                'control_number' => 'ADM-0001',
+                'career' => 'Ingeniería en Sistemas Computacionales',
+                'password' => Hash::make('secreto123'),
+            ]
+        );
+
         $docente1 = User::updateOrCreate(
             ['email' => 'roberto.mendez@itcelaya.edu.mx'],
             [

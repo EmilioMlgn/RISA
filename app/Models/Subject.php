@@ -23,6 +23,7 @@ class Subject extends Model
         'practice_hours',
         'semester_order',
         'area',
+        'status',
     ];
 
     protected function casts(): array
@@ -33,6 +34,14 @@ class Subject extends Model
             'practice_hours' => 'integer',
             'semester_order' => 'integer',
         ];
+    }
+
+    /**
+     * Materias vigentes en la retícula (excluye las dadas de baja lógica).
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'Activa');
     }
 
     /**

@@ -1,0 +1,54 @@
+PHPUnit 12.5.39 by Sebastian Bergmann and contributors.
+Runtime: PHP 8.5.4
+Configuration: /home/zam/Descargas/docs/RISA/phpunit.xml
+Time: 00:26.596, Memory: 56.50 MB
+Example (Tests\Feature\Example)
+ The application returns a successful response
+Example (Tests\Unit\Example)
+ That true is true
+Load Recommender Engine (Tests\Unit\LoadRecommenderEngine)
+ Prioriza materias reprobadas
+ Respeta limite de creditos maximo
+Prerequisite Automaton (Tests\Unit\PrerequisiteAutomaton)
+ Materia aprobada es inmutable
+ Materia pendiente transita a disponible si cumple requisitos
+ Materia pendiente permanece si falta requisito
+ Materia cursando acredita con calificacion aprobatoria
+ Materia cursando pasa a reprobada si no acredita
+ Resolver estado con prerrequisitos
+Reticula Api (Tests\Feature\ReticulaApi)
+ Carga vista principal de reticula
+ Endpoint api reticula retorna estructura correcta
+ Endpoint api recomendacion calcula carga y proyeccion
+ Registro de observacion docente
+Semester Projection Engine (Tests\Unit\SemesterProjectionEngine)
+ Proyeccion por cadena critica de seriacion
+ Proyeccion cero si todo esta aprobado
+Subject Catalog (Tests\Feature\SubjectCatalog)
+ Invitado es redirigido al login en la pantalla
+ Invitado recibe 401 en la api
+ Alumno recibe 403 en pantalla y en todas las operaciones de escritura
+ Docente tampoco puede modificar el catalogo
+ Admin accede a la pantalla y a la lista
+ Login con credenciales correctas e incorrectas
+ Alta valida crea la materia y registra bitacora
+ Alta con campos vacios devuelve mensajes obligatorios
+ Alta con formatos y rangos invalidos
+ Limites de creditos y semestre
+ Clave duplicada se rechaza sin importar mayusculas ni guiones
+ Nombre homonimo en mismo semestre exige confirmacion
+ Prerrequisito debe ser de semestre menor
+ Prerrequisito inactivo o repetido se rechaza
+ Dependencia circular se rechaza en edicion
+ Edicion de nombre no modifica la clave
+ Cambio de creditos o semestre exige confirmacion
+ Bajar semestre por debajo de un dependiente se rechaza
+ Eliminar sin confirmacion devuelve 409 y no borra
+ Eliminacion fisica sin historial ni dependientes
+ Eliminar materia que es prerrequisito queda bloqueado
+ Materia con historial se da de baja logica y conserva el historial
+ Reactivar materia inactiva
+ Alta baja y reactivacion se reflejan en la reticula
+ La edicion reubica la materia en la reticula
+ Bitacora solo para admin
+OK (42 tests, 438 assertions)
