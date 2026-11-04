@@ -15,6 +15,9 @@ use App\Core\Automaton\SubjectStatus;
  */
 class SemesterProjectionEngine
 {
+    /** Créditos que cursa un estudiante regular por semestre (estándar institucional). */
+    public const CREDITOS_PROMEDIO = 30;
+
     /**
      * Proyecta el número de semestres restantes y analiza la ruta crítica del estudiante.
      *
@@ -39,7 +42,7 @@ class SemesterProjectionEngine
         array $catalogoMaterias,
         array $historialEstudiante,
         array $prerrequisitosPorMateria,
-        int $promedioCreditosPorSemestre = 30
+        int $promedioCreditosPorSemestre = self::CREDITOS_PROMEDIO
     ): array {
         $creditosAprobados = 0;
         $creditosCursando = 0;

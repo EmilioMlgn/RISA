@@ -21,6 +21,12 @@ use App\Core\Automaton\SubjectStatus;
  */
 class LoadRecommenderEngine
 {
+    /** Límite institucional superior de créditos por semestre. */
+    public const CREDITOS_MAXIMOS = 36;
+
+    /** Límite institucional inferior de créditos por semestre. */
+    public const CREDITOS_MINIMOS = 20;
+
     public function __construct(
         protected PrerequisiteAutomaton $automaton = new PrerequisiteAutomaton
     ) {}
@@ -54,8 +60,8 @@ class LoadRecommenderEngine
         array $catalogoMaterias,
         array $historialEstudiante,
         array $prerrequisitosPorMateria,
-        int $limiteCreditosMaximo = 36,
-        int $limiteCreditosMinimo = 20
+        int $limiteCreditosMaximo = self::CREDITOS_MAXIMOS,
+        int $limiteCreditosMinimo = self::CREDITOS_MINIMOS
     ): array {
         // 1. Calcular total de créditos ya aprobados
         $creditosAprobados = 0;

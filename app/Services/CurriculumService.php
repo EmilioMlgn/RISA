@@ -203,9 +203,14 @@ class CurriculumService
 
     /**
      * Calcula la recomendación de carga y la proyección de egreso.
+     *
+     * Los límites opcionales permiten simular escenarios; por omisión se usan los institucionales.
      */
-    public function getRecommendation(User $student): array
-    {
+    public function getRecommendation(
+        User $student,
+        int $limiteCreditosMaximo = LoadRecommenderEngine::CREDITOS_MAXIMOS,
+        int $creditosPorSemestre = SemesterProjectionEngine::CREDITOS_PROMEDIO
+    ): array {
         $plan = StudyPlan::where('is_active', true)->first() ?? StudyPlan::first();
 
         $subjects = Subject::active()
@@ -247,15 +252,15 @@ class CurriculumService
             catalogoMaterias: $catalogoMaterias,
             historialEstudiante: $historialMap,
             prerrequisitosPorMateria: $prereqsMap,
-            limiteCreditosMaximo: 36,
-            limiteCreditosMinimo: 20
+            limiteCreditosMaximo: $limiteCreditosMaximo,
+            limiteCreditosMinimo: min(LoadRecommenderEngine::CREDITOS_MINIMOS, $limiteCreditosMaximo)
         );
 
         $proyeccion = $this->projectionEngine->proyectarSemestres(
             catalogoMaterias: $catalogoMaterias,
             historialEstudiante: $historialMap,
             prerrequisitosPorMateria: $prereqsMap,
-            promedioCreditosPorSemestre: 30
+            promedioCreditosPorSemestre: $creditosPorSemestre
         );
 
         return [

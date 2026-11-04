@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\PlaneacionController;
 use App\Http\Controllers\Web\SubjectCatalogController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,14 +15,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashboardController::class, 'index'])->name('reticula.index');
 Route::get('/reticula', [DashboardController::class, 'index'])->name('reticula.view');
 
-// Módulos complementarios y maquetas de trabajo del equipo
-Route::get('/configuracion-reglas', function () {
-    return response()->file(base_path('MockupReglasConfiguracion_v1_2026-10-12.html'));
-})->name('reglas.configuracion');
-
-Route::get('/simulador-escenarios', function () {
-    return response()->file(base_path('MockupRecomendacion_v1_2026-10-14.html'));
-})->name('recomendacion.simulador');
+// Planeación: simulador con el motor real (estudiante) y consulta de reglas (administración)
+Route::get('/simulador-escenarios', [PlaneacionController::class, 'simulador'])->name('recomendacion.simulador');
 
 // Autenticación y administración del catálogo de materias (solo rol admin, validado en servidor)
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -30,6 +25,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('role:admin')->group(function () {
     Route::get('/catalogo-materias', [SubjectCatalogController::class, 'index'])->name('catalogo.materias');
+    Route::get('/configuracion-reglas', [PlaneacionController::class, 'reglas'])->name('reglas.configuracion');
 
     Route::prefix('admin/catalogo')->group(function () {
         Route::get('/materias', [SubjectCatalogController::class, 'list']);
