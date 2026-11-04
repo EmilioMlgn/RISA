@@ -176,7 +176,7 @@
         .nav-item {
             display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px;
             width: 100%; padding: 10px; border: 0; border-radius: 12px;
-            background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+            background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; text-decoration: none;
             transition: background 0.2s ease, transform 0.2s var(--ease-out);
             opacity: 0; transform: translateX(-16px);
         }
@@ -529,6 +529,22 @@
             <span><b>Recomendación de carga</b><small>Materias sugeridas y egreso</small></span>
             <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
+        <h3>Módulos</h3>
+        <a class="nav-item" href="{{ route('catalogo.materias') }}">
+            <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+            <span><b>Catálogo de materias</b><small>Administración de asignaturas</small></span>
+            <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a class="nav-item" href="{{ route('reglas.configuracion') }}">
+            <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span>
+            <span><b>Configuración de reglas</b><small>Reglas institucionales de carga</small></span>
+            <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a class="nav-item" href="{{ route('recomendacion.simulador') }}">
+            <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span>
+            <span><b>Simulador de escenarios</b><small>Prueba distintas cargas</small></span>
+            <svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
         <h3>Herramientas</h3>
         <button type="button" class="nav-item" onclick="cerrarMenu(); setTimeout(() => window.print(), 350)">
             <span class="nav-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg></span>

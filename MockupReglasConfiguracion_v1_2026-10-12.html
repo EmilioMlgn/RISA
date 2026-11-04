@@ -96,9 +96,9 @@ legend { margin-bottom: 8px; padding: 0; font-weight: 600; }
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
       </button>
       <nav class="menu" id="menu" aria-label="Menú principal" hidden>
-        <a href="#" aria-current="page">Reglas de recomendación</a>
-        <a href="#">Catálogo de materias</a>
-        <a href="#">Bitácora de cambios</a>
+        <a href="/configuracion-reglas" aria-current="page">Reglas de recomendación</a>
+        <a href="/catalogo-materias">Catálogo de materias</a>
+        <a href="/">Retícula académica</a>
         <a href="#">Cerrar sesión</a>
       </nav>
     </div>
@@ -305,7 +305,15 @@ $("agregar").addEventListener("click", () => {
 $("filas").addEventListener("click", e => {
   const b = e.target.closest("button[data-i]");
   if (!b) return;
-  pintarFilas(valores().filter((_, i) => i !== Number(b.dataset.i)));
+  const idx = Number(b.dataset.i);
+  const vals = valores();
+  const clave = vals[idx];
+  const mat = clave ? porClave(clave) : null;
+  const nombre = mat ? "«" + mat.n + "»" : "este prerrequisito";
+  if (!confirm("¿Confirmas que deseas eliminar " + nombre + " de la lista de prerrequisitos?")) {
+    return;
+  }
+  pintarFilas(vals.filter((_, i) => i !== idx));
 });
 $("cancelar").addEventListener("click", () => dlg.close());
 
